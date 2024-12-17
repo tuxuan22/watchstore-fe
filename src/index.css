@@ -1,0 +1,132 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
+
+html,
+body {
+  padding: 0;
+  margin: 0;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.custom-slider button.slick-next{
+  z-index: 10;
+  top: 45%;
+  right: 5px;
+}
+
+.custom-slider button.slick-prev{
+  z-index: 10;
+  top: 45%;
+  left:-7px;
+}
+
+.custom-slider button.slick-next::before{
+  color: grey;
+  content: '\290D';
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  background-color: white;
+  box-shadow: 1px 2px 7px 1px #dddddd;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-bottom: 0.3rem;
+}
+
+.custom-slider button.slick-prev::before{
+  color: grey;
+  content: '\290C';
+   width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  background-color: white;
+  box-shadow: 1px 2px 7px 1px #dddddd;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-bottom: 0.3rem;
+}
+
+.sub-product-slider button.slick-next{
+  z-index: 10;
+  top: 50%;
+  right: -45px;
+}
+
+.sub-product-slider button.slick-prev{
+  z-index: 10;
+  top: 50%;
+  left:-57px;
+}
+
+.sub-product-slider button.slick-next::before{
+  color: grey;
+  content: '\290D';
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background-color: white;
+  box-shadow: 1px 2px 7px 1px #dddddd;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-bottom: 0.3rem;
+}
+
+.sub-product-slider button.slick-prev::before{
+  color: grey;
+  content: '\290C';
+   width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background-color: white;
+  box-shadow: 1px 2px 7px 1px #dddddd;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-bottom: 0.3rem;
+}
+
+.dropdownProfile{
+  position: absolute;
+  top: 3.5rem;
+  right: 26rem;
+  width: 150px;
+  padding: 5px 10px;
+  background-color: white;
+  border: 1px solid #ebebeb;
+}
+
+.dropdownProfile::before{
+  content: '';
+  position: absolute;
+  top: -7px;
+  right:0.2rem;
+  width: 12px;
+  height: 12px;
+  background-color: white;
+  border-left: 1px solid #ebebeb;
+  border-bottom: 1px solid #ebebeb;    
+  transform: rotate(135deg);
+}
+
+.search_box{
+  border: solid 1px #ebebeb;
+  border-radius: 40px;
+}
+/* 
+#imgMag{
+  width: 2260px;
+  height: 2260px;
+} */
+
+
+
+
+
