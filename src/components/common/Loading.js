@@ -1,11 +1,19 @@
 import React, { memo } from 'react'
-import { HashLoader } from 'react-spinners'
+import { MutatingDots } from 'react-loader-spinner'
 
 const Loading = () => {
     return (
-        <div>
-            <HashLoader color='#d63838' />
-        </div>
+        <MutatingDots
+            visible={true}
+            height="100"
+            width="100"
+            color="#ff0000"
+            secondaryColor="#ff0000"
+            radius="12.5"
+            ariaLabel="mutating-dots-loading"
+            wrapperStyle={{}}
+            wrapperClass=""
+        />
     )
 }
 

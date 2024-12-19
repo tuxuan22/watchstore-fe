@@ -11,7 +11,7 @@ const Pagination = ({ totalCount }) => {
     const pagination = usePagination(totalCount, page)
     return (
         <div className='flex items-center'>
-            {pagination?.map(el => (
+            {pagination?.map((el) => (
                 <PagiItem key={el}>
                     {el}
                 </PagiItem>

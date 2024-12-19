@@ -33,8 +33,11 @@ const Login = ({ dispatch, navigate }) => {
         const response = await apiForgotPassword({ email })
 
         if (response.success) {
-            toast.success(response.mes, { theme: 'colored' })
-        } else toast.info(response.mes, { theme: 'colored' })
+            toast.success(response.mes)
+        } else toast.error(response.mes)
+
+        dispatch(showModal({ isShowModal: false, modalChidren: <null /> }))
+
 
     }
     const handleSubmit = useCallback(async () => {
@@ -43,11 +46,13 @@ const Login = ({ dispatch, navigate }) => {
         if (invalids === 0) {
             if (response.success) {
                 setInvalidFields(true)
-                Swal.fire('Đăng nhập thành công', response.mes, 'success')
                 dispatch(login({ isLoggedIn: true, token: response.accessToken, userData: response.userData }))
                 searchParams.get('redirect') ? navigate(searchParams.get('redirect')) : navigate(`/${path.HOME}`)
             } else {
-                Swal.fire('Lỗi!', response.mes, 'error')
+                setInvalidFields((prev) => [
+                    ...prev,
+                    { name: 'auth', mes: response.mes },
+                ]);
             }
         }
     }, [payload, dispatch, navigate])
@@ -57,10 +62,10 @@ const Login = ({ dispatch, navigate }) => {
     return (
         <div className='w-full flex justify-center items-center my-[100px]'>
 
-            {isForgotPassword && <div className='absolute top-0 left-0 bottom-0 right-0 z-50 bg-overlay flex flex-col items-center justify-center'>
+            {isForgotPassword && <div className='absolute inset-0 z-10 bg-overlay flex flex-col items-center py-8'>
                 <div className='bg-white flex flex-col gap-4 w-[400px] py-8 px-10'>
                     <label htmlFor="email">Đặt lại mật khẩu của bạn</label>
-                    <input type="text" id='femail' placeholder='Địa chỉ email'
+                    <input type="text" id='email' placeholder='Địa chỉ email'
                         className='px-4 py-2 border rounded-md outline-none'
                         value={email} onChange={e => setEmail(e.target.value)}
                     />
@@ -81,6 +86,7 @@ const Login = ({ dispatch, navigate }) => {
 
             <div className='flex flex-col items-center p-8 bg-white rounded-md min-w-[390px] shadow shadow-slate-400'>
                 <h1 className='uppercase text-[24px] text-[#333] font-nomal'>đăng nhập</h1>
+
                 <InputField
                     placeholder='Email'
                     value={payload.email}
@@ -99,12 +105,19 @@ const Login = ({ dispatch, navigate }) => {
                     setInvalidFields={setInvalidFields}
                 />
 
+
                 <Button
 
                     name='Đăng nhập'
                     handleOnClick={handleSubmit}
                     fw
                 />
+
+                {invalidFields?.some(el => el.name === 'auth') && (
+                    <small className='text-red-600 italic w-full text-left'>
+                        {invalidFields.find(el => el.name === 'auth')?.mes}
+                    </small>
+                )}
                 <div className='flex items-center justify-between my-2 w-full text-sm'>
                     <Link className='hover:text-main cursor-pointer' onClick={() => setIsForgotPassword(true)}>Quên mật khẩu</Link>
                     <Link className='hover:text-main cursor-pointer' to={`/${path.REGISTER}`}>Đăng ký tài khoản</Link>

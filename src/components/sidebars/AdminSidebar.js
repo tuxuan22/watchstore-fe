@@ -6,8 +6,8 @@ import clsx from 'clsx'
 import icons from 'utils/icons'
 import path from 'utils/path'
 
-const activedStyle = 'px-4 py-2 flex items-center gap-2 bg-gray-200 text-slate-900'
-const notActivedStyle = 'px-4 py-2 flex items-center gap-2 hover:bg-gray-300 hover:text-slate-900'
+const activedStyle = 'px-4 py-2 flex items-center gap-2 bg-main text-white'
+const notActivedStyle = 'px-4 py-2 flex items-center gap-2 hover:bg-[#ff4e50] hover:text-white'
 
 const { MdOutlineKeyboardArrowRight, MdOutlineKeyboardArrowDown } = icons
 
@@ -18,7 +18,7 @@ const AdminSidebar = () => {
         else setActived(prev => [...prev, tabId])
     }
     return (
-        <div className=' bg-white h-full text-gray-500 '>
+        <div className=' bg-white h-full text-slate-900 '>
             <div className='flex flex-col justify-center items-center gap-2'>
                 <Link to='/'> <img src={logo} alt="logo" className='w-[200px] object-contain' /></Link>
                 <small>Admin Dashboard</small>
@@ -35,7 +35,7 @@ const AdminSidebar = () => {
                                 <span>{el.text}</span>
                             </NavLink>}
                         {el.type === 'PARENT' && <div onClick={() => handleShowTabs(el.id)} className='flex flex-col'>
-                            <div className='flex items-center justify-between px-4 py-2 hover:bg-gray-300 hover:text-slate-900 cursor-pointer'>
+                            <div className='flex items-center justify-between px-4 py-2 hover:bg-[#ff4e50] hover:text-white cursor-pointer'>
                                 <div className='flex items-center gap-2'>
                                     <span>{el.icon}</span>
                                     <span>{el.text}</span>

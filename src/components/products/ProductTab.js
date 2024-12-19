@@ -32,24 +32,24 @@ const ProductTab = () => {
   }, [activedTab, newProducts, bestSellers])
 
   return (
-    <div className='h-[425px]'>
-      <div className={clsx(isShowModal ? ' hidden' : 'w-main mb-5 ')}>
-        <div className='flex text-2xl my-5 justify-center'>
-          {productTabs.map(el => (
-            <span
-              key={el.id}
-              className={`text-lg font-normal cursor-pointer flex justify-center w-[230px] py-2 mx-1 ${activedTab === el.id ? 'bg-main text-white' : 'hover:bg-main hover:text-white'}`}
-              onClick={() => setActivedTab(el.id)}
-            >{el.name}</span>
-          ))}
 
-        </div>
-
-
-        <CustomSlider activedTab={activedTab} products={products} />
+    <div className='w-main mb-5 '>
+      <div className='flex text-2xl my-5 justify-center'>
+        {productTabs.map(el => (
+          <span
+            key={el.id}
+            className={`text-lg font-normal cursor-pointer flex justify-center w-[230px] py-2 mx-1 ${activedTab === el.id ? 'bg-main text-white' : 'hover:bg-main hover:text-white'}`}
+            onClick={() => setActivedTab(el.id)}
+          >{el.name}</span>
+        ))}
 
       </div>
+
+
+      <CustomSlider activedTab={activedTab} products={products} />
+
     </div>
+
   )
 }
 

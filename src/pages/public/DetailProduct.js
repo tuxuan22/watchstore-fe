@@ -182,7 +182,7 @@ const DetailProduct = ({ isQuickView, data, dispatch, navigate, location }) => {
                                 </div>
                             ))}
                             {selectedProduct.images.length > 0 && selectedProduct?.images?.map((el, index) => (
-                                <div className='mx-2' key={el} onClick={() => setSelectedImage(el)}>
+                                <div className='mx-2' key={index} onClick={() => setSelectedImage(el)}>
                                     <img
                                         onClick={e => handleClickImage(e, el)}
                                         src={el}
@@ -210,7 +210,7 @@ const DetailProduct = ({ isQuickView, data, dispatch, navigate, location }) => {
                                 <img title={product?.color} src={product?.thumb} alt="thumb" className='  w-[40px] h-[40px] border bg-white rounded-full object-cover' />
                             </div>
                             {product?.variants?.map(el => (
-                                <div onClick={() => setVariant(el.sku)}
+                                <div key={el.sku} onClick={() => setVariant(el.sku)}
                                     className={clsx('flex items-center gap-1 rounded-full border cursor-pointer', variant === el.sku && ' border-black')}>
                                     <img title={el.color} src={el.thumb} alt="thumb" className='  w-[40px] h-[40px] border bg-white rounded-full object-cover' />
                                 </div>
@@ -225,11 +225,11 @@ const DetailProduct = ({ isQuickView, data, dispatch, navigate, location }) => {
                             handleChangeQuantity={handleChangeQuantity}
                         />
                         <Button handleOnClick={handleAddToCart} name='Thêm vào giỏ hàng'
-                            styles='h-[50px] border border-blue-500 text-blue-500 w-[200px] hover:bg-blue-500 hover:text-white'
+                            styles='h-[50px] bg-main text-white w-[200px] hover:bg-white hover:border-main hover:text-main hover:border'
                         />
-                        <Button name='Mua ngay'
+                        {/* <Button name='Mua ngay'
                             styles='h-[50px] bg-red-600 text-white w-[200px] hover:bg-red-500'
-                        />
+                        /> */}
                     </div>
                 </div>
             </div>

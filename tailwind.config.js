@@ -12,14 +12,14 @@ module.exports = {
         main: '1170px'
       },
       backgroundColor: {
-        main: '#bf0000',
+        main: '#ff0000',
         bgc: '#f4f6f8',
         cusblue: '#3b5998',
         cusred: '#e14b33',
         overlay: 'rgba(0,0,0,0.4)'
       },
       colors: {
-        main: '#9b2c2c'
+        main: '#ff0000'
       },
       gridGrow: {
         'span-7': 'span 7 / span 7'

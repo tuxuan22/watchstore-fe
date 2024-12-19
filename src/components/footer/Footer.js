@@ -1,9 +1,12 @@
 import React, { memo } from 'react'
+import { Link } from 'react-router-dom'
+import logo from 'assets/logo.png'
+import path from 'utils/path'
 
 const Footer = () => {
     return (
         <footer
-            className="w-full bg-neutral-100 text-center text-neutral-600 lg:text-left">
+            className="w-full bg-white text-center text-neutral-600 lg:text-left">
 
 
             {/* <!-- Main container div: holds the entire content of the footer, including four sections (TW Elements, Products, Useful links, and Contact), with responsive styling and appropriate padding/margins. --> */}
@@ -14,15 +17,8 @@ const Footer = () => {
                         <div className="">
                             <h6
                                 className="mb-4 flex items-center justify-center font-semibold uppercase md:justify-start">
-                                <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    viewBox="0 0 24 24"
-                                    fill="currentColor"
-                                    className="mr-3 h-4 w-4">
-                                    <path
-                                        d="M12.378 1.602a.75.75 0 00-.756 0L3 6.632l9 5.25 9-5.25-8.622-5.03zM21.75 7.93l-9 5.25v9l8.628-5.032a.75.75 0 00.372-.648V7.93zM11.25 22.18v-9l-9-5.25v8.57a.75.75 0 00.372.648l8.628 5.033z" />
-                                </svg>
-                                TW Elements
+                                <div className='w-[150px] ' ><Link to={`/${path.HOME}`}><img src={logo} alt='logo' /></Link></div>
+
                             </h6>
                             <p>
 
@@ -35,20 +31,20 @@ const Footer = () => {
                                 Products
                             </h6>
                             <p className="mb-4">
-                                <a className="text-neutral-600 "
-                                >Angular</a>
+                                <span className="text-neutral-600 "
+                                >Angular</span>
                             </p>
                             <p className="mb-4">
-                                <a className="text-neutral-600 "
-                                >React</a>
+                                <span className="text-neutral-600 "
+                                >React</span>
                             </p>
                             <p className="mb-4">
-                                <a className="text-neutral-600 "
-                                >Vue</a>
+                                <span className="text-neutral-600 "
+                                >Vue</span>
                             </p>
                             <p>
-                                <a className="text-neutral-600 "
-                                >Laravel</a>
+                                <span className="text-neutral-600 "
+                                >Laravel</span>
                             </p>
                         </div>
                         {/* <!-- Useful links section --> */}
@@ -58,20 +54,20 @@ const Footer = () => {
                                 Useful links
                             </h6>
                             <p className="mb-4">
-                                <a className="text-neutral-600 "
-                                >Pricing</a>
+                                <span className="text-neutral-600 "
+                                >Pricing</span>
                             </p>
                             <p className="mb-4">
-                                <a className="text-neutral-600 "
-                                >Settings</a>
+                                <span className="text-neutral-600 "
+                                >Settings</span>
                             </p>
                             <p className="mb-4">
-                                <a className="text-neutral-600 "
-                                >Orders</a>
+                                <span className="text-neutral-600 "
+                                >Orders</span>
                             </p>
                             <p>
-                                <a className="text-neutral-600 "
-                                >Help</a>
+                                <span className="text-neutral-600 "
+                                >Help</span>
                             </p>
                         </div>
                         {/* <!-- Contact section --> */}
@@ -91,7 +87,7 @@ const Footer = () => {
                                     <path
                                         d="M12 5.432l8.159 8.159c.03.03.06.058.091.086v6.198c0 1.035-.84 1.875-1.875 1.875H15a.75.75 0 01-.75-.75v-4.5a.75.75 0 00-.75-.75h-3a.75.75 0 00-.75.75V21a.75.75 0 01-.75.75H5.625a1.875 1.875 0 01-1.875-1.875v-6.198a2.29 2.29 0 00.091-.086L12 5.43z" />
                                 </svg>
-                                New York, NY 10012, US
+                                DH Cong Nghe Sai Gon
                             </p>
                             <p className="mb-4 flex items-center justify-center md:justify-start">
                                 <svg
@@ -139,11 +135,10 @@ const Footer = () => {
 
             {/* <!--Copyright section--> */}
             <div className="bg-neutral-200 p-6 text-center ">
-                <span>© 2023 Copyright:</span>
-                <a
+                <span>© 2024 Copyright: </span>
+                <span
                     className="font-semibold text-neutral-600 "
-                    href="https://tw-elements.com/"
-                >TW Elements</a>
+                > LDCD</span>
             </div>
         </footer>
     )

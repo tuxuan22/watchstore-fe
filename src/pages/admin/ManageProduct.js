@@ -79,14 +79,14 @@ const ManageProduct = ({ navigate, location }) => {
 
   return (
     <div className='w-full relative'>
-      {editProduct && <div className='absolute inset-0 bg-bgc z-50'>
+      {editProduct && <div className='absolute inset-0 z-50'>
         <UpdateProduct
           editProduct={editProduct}
           render={render}
           setEditProduct={setEditProduct}
         />
       </div>}
-      {customizeVariant && <div className='absolute inset-0 bg-bgc z-50'>
+      {customizeVariant && <div className='absolute inset-0  z-50'>
         <CustomizeVariants
           customizeVariant={customizeVariant}
           render={render}

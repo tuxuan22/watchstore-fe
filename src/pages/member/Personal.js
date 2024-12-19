@@ -5,9 +5,9 @@ import { useForm } from 'react-hook-form'
 const Personal = () => {
     const { register, formState: { errors }, handleSubmit, reset } = useForm()
     return (
-        <div className='w-full'>
+        <div className='w-full bg-white mt-8'>
             <header className='text-2xl font-semibold p-4 border-b '>
-                Personal
+                Tài khoản
             </header>
             <div className='w-4/5 mx-auto py-8'>
                 <InputForm

@@ -43,7 +43,7 @@ const GroupAction = ({ dispatch, navigate }) => {
                 <FaUserCircle size={27} className='ml-[18px]' />
                 {
                     openProfile &&
-                    <div className='dropdownProfile flex flex-col'>
+                    <div className='z-50 dropdownProfile flex flex-col'>
 
                         {isLoggedIn && current
                             ? <div className='flex flex-col gap-2 text-sm'>

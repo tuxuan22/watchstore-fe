@@ -126,6 +126,10 @@ body {
   height: 2260px;
 } */
 
+.mdm{
+  z-index:999999 !important;
+}
+
 
 
 

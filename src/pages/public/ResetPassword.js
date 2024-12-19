@@ -11,8 +11,9 @@ const ResetPassword = () => {
     const handleResetPassword = async () => {
         const response = await apiResetPassword({ password, token })
         if (response.success) {
-            toast.success(response.mes, { theme: 'colored' })
-        } else toast.info(response.mes, { theme: 'colored' })
+            toast.success(response.mes)
+            window.close()
+        } else toast.error(response.mes)
     }
 
     return (

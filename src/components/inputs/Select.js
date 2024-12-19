@@ -19,8 +19,8 @@ const Select = ({
             {label && <label htmlFor={id}>{label}</label>}
             <select defaultValue={defaultValue} className={clsx('p-2 outline-none border', fullWidth && 'w-full', style)} id={id} {...register(id, validate)}>
                 <option value="">---Chọn---</option>
-                {options?.map(el => (
-                    <option key={el} value={el.code}>{el.value}</option>
+                {options?.map((el, index) => (
+                    <option key={index} value={el.code}>{el.value}</option>
                 ))}
             </select>
             {errors[id] && <small className='text-xs text-red-600'>{errors[id]?.message}</small>}

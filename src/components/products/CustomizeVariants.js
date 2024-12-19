@@ -42,9 +42,9 @@ const CustomizeVariants = ({ render, customizeVariant, setCustomizeVariant, disp
             if (data.images) {
                 for (let image of data.images) formData.append('images', image)
             }
-            // dispatch(showModal({ isShowModal: true, modalChildren: <Loading /> }))
+            dispatch(showModal({ isShowModal: true, modalChildren: <Loading /> }))
             const response = await apiAddVariant(formData, customizeVariant._id)
-            // dispatch(showModal({ isShowModal: false, modalChildren: null }))
+            dispatch(showModal({ isShowModal: false, modalChildren: null }))
             if (response.success) {
                 toast.success(response.mes)
                 render()
@@ -79,7 +79,7 @@ const CustomizeVariants = ({ render, customizeVariant, setCustomizeVariant, disp
         if (watch('images') instanceof FileList && watch('images').length > 0) handlePreviewImages(watch('images'))
     }, [watch('images')])
     return (
-        <div className='w-full'>
+        <div className='w-full bg-bgc min-h-screen'>
             <h1 className='flex justify-between items-center px-4 border-b h-[75px] text-[28px] font-semibold'>
                 <span>Thêm biến thể sản phẩm</span>
                 <button className='text-lg bg-blue-500 hover:bg-blue-400 text-white p-2 ' onClick={() => setCustomizeVariant(null)}>Quay lại</button>
@@ -138,7 +138,7 @@ const CustomizeVariants = ({ render, customizeVariant, setCustomizeVariant, disp
                         {errors['thumb'] && <small className='text-xs text-red-600'>{errors['thumb']?.message}</small>}
                     </div>
                     {preview.thumb && <div className='my-4'>
-                        <img src={preview.thumb} alt='thumbnail' className='border w-[200px] object-contain' />
+                        <img src={preview.thumb} alt='thumbnail' className='border w-[150px] object-contain' />
                     </div>}
                     <div className='flex flex-col gap-2 my-4'>
                         <label htmlFor='products'>Tải ảnh sản phẩm</label>
@@ -150,7 +150,7 @@ const CustomizeVariants = ({ render, customizeVariant, setCustomizeVariant, disp
                         />
                         {errors['images'] && <small className='text-xs text-red-600'>{errors['images']?.message}</small>}
                     </div>
-                    {preview.images.length > 0 && <div className='my-4 flex w-full gap-3 flex-wrap'>
+                    {preview.images.length > 0 && <div className='flex w-full gap-3 flex-wrap'>
                         {preview.images?.map((el, idx) => (
                             <div
                                 className='w-fit relative'
@@ -158,7 +158,7 @@ const CustomizeVariants = ({ render, customizeVariant, setCustomizeVariant, disp
                             // onMouseEnter={() => setHoverItem(el.name)}
                             // onMouseLeave={() => setHoverItem(null)}
                             >
-                                <img src={el} alt='products' className='border w-[200px] object-contain' />
+                                <img src={el} alt='products' className='border w-[150px] object-contain' />
                                 {/* {hoverItem === el.name && <div className='absolute inset-0 bg-overlay flex justify-center items-center'>
                                         <RiDeleteBin2Fill
                                             size={30}

@@ -3,7 +3,7 @@ import { formatMoney, renderStar } from 'utils/helpers'
 import bestSeller from 'assets/bestSeller.png'
 import newPro from 'assets/newPro.png'
 import offer from 'assets/offer.png'
-import { SelectOption } from '../'
+import { Loading, SelectOption } from '../'
 import icons from 'utils/icons'
 import withBaseComponent from 'hocs/withBaseComponent'
 import { showModal } from 'store/app/appSlice'
@@ -49,7 +49,8 @@ const Product = ({ productData, isNew, normal, navigate, dispatch, location }) =
         }
         if (flag === 'WISHLIST') console.log()
         if (flag === 'QUICK_VIEW') {
-            dispatch(showModal({ isShowModal: true, modalChildren: <DetailProduct data={{ pid: productData?._id, category: productData?.category, title: productData?.title }} isQuickView /> }))
+            // dispatch(showModal({ isShowModal: true, modalChildren: <DetailProduct data={{ pid: productData?._id, category: productData?.category, title: productData?.title }} isQuickView /> }))
+            dispatch(showModal({ isShowModal: true, modalChildren: <Loading /> }))
         }
     }
 
@@ -86,7 +87,7 @@ const Product = ({ productData, isNew, normal, navigate, dispatch, location }) =
                     <a className='line-clamp-2' href={productData.pid} title={productData.title}>{productData.title}</a>
                 </span>
                 <div className='text-[#eb0000] text-base block text-center font-semibold'>{formatMoney(productData.price)} </div>
-                <div className='flex justify-center'> {renderStar(productData?.totalRatings)?.map(el => (<span key={el}>{el}</span>))} </div>
+                <div className='flex justify-center'> {renderStar(productData?.totalRatings)?.map((el, index) => (<span key={index}>{el}</span>))} </div>
             </div>
         </div >
     )

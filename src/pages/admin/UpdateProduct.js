@@ -102,7 +102,7 @@ const UpdateProduct = ({ editProduct, render, setEditProduct, dispatch }) => {
 
             dispatch(showModal({ isShowModal: true, modalChildren: <Loading /> }))
             const response = await apiUpdateProduct(formData, editProduct._id)
-            // dispatch(showModal({ isShowModal: false, modalChildren: null }))
+            dispatch(showModal({ isShowModal: false, modalChildren: null }))
 
             if (response.success) {
                 toast.success(response.mes)
@@ -114,7 +114,7 @@ const UpdateProduct = ({ editProduct, render, setEditProduct, dispatch }) => {
 
 
     return (
-        <div className='w-full'>
+        <div className='w-full bg-bgc'>
             <h1 className='flex justify-between items-center px-4 border-b h-[75px] text-[28px] font-semibold'>
                 <span>Sửa sản phẩm</span>
                 <button className='text-lg bg-blue-500 hover:bg-blue-400 text-white p-2 ' onClick={() => setEditProduct(null)}>Quay lại</button>

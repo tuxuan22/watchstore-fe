@@ -18,7 +18,7 @@ function App() {
     dispatch(getCategories())
   }, [dispatch])
   return (
-    <div className='h-screen font-main relative'>
+    <div className='h-screen font-main '>
 
       {isShowCart && <div onClick={() => dispatch(showCart())} className='absolute inset-0 bg-overlay z-50 flex justify-end'>
         <Cart />
@@ -63,13 +63,12 @@ function App() {
       </Routes>
       <ToastContainer
         autoClose={2000}
-        hideProgressBar={true}
-        // newestOnTop={false}
+        hideProgressBar
         closeOnClick
-        // rtl={false}
         pauseOnFocusLoss
         draggable
         pauseOnHover
+        theme='colored'
       />
 
 

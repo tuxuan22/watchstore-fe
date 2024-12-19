@@ -6,8 +6,8 @@ import clsx from 'clsx'
 import icons from 'utils/icons'
 import { useSelector } from 'react-redux'
 
-const activedStyle = 'px-4 py-2 flex items-center gap-2 bg-gray-200 text-slate-900'
-const notActivedStyle = 'px-4 py-2 flex items-center gap-2 hover:bg-gray-300 hover:text-slate-900'
+const activedStyle = 'px-4 py-2 flex items-center gap-2 text-main'
+const notActivedStyle = 'px-4 py-2 flex items-center gap-2  hover:text-main'
 
 const { MdOutlineKeyboardArrowRight, MdOutlineKeyboardArrowDown } = icons
 const MemberSidebar = () => {
@@ -18,9 +18,9 @@ const MemberSidebar = () => {
         else setActived(prev => [...prev, tabId])
     }
     return (
-        <div className='bg-white w-[290px] h-full text-gray-500 '>
-            <div className='w-main flex items-center p-4'>
-                <img src={current?.avatar || avatar} alt="logo" className='w-[40px] object-contain' />
+        <div className=' w-[290px] h-full text-slate-900 mt-8'>
+            <div className='w-main flex items-center p-4 gap-4'>
+                <img src={current?.avatar || avatar} alt="logo" className='w-[50px] object-contain' />
                 <small>{`${current?.firstname} ${current?.lastname}`}</small>
             </div>
             <div>
@@ -34,7 +34,7 @@ const MemberSidebar = () => {
                                 <span>{el.icon}</span>
                                 <span>{el.text}</span>
                             </NavLink>}
-                        {el.type === 'PARENT' && <div onClick={() => handleShowTabs(el.id)} className='flex flex-col'>
+                        {/* {el.type === 'PARENT' && <div onClick={() => handleShowTabs(el.id)} className='flex flex-col'>
                             <div className='flex items-center justify-between px-4 py-2 hover:bg-gray-300 hover:text-slate-900 cursor-pointer'>
                                 <div className='flex items-center gap-2'>
                                     <span>{el.icon}</span>
@@ -54,7 +54,7 @@ const MemberSidebar = () => {
                                     </NavLink>
                                 ))}
                             </div>}
-                        </div>}
+                        </div>} */}
                     </Fragment>
                 ))}
             </div>

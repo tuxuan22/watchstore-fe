@@ -78,7 +78,7 @@ const Products = ({ navigate }) => {
 
     return (
         <div>
-            <div className='w-main p-4'>
+            <div className=' w-main p-4'>
                 <BreadCrumb category={category} />
             </div>
             <div className='w-main p-4 flex'>
@@ -117,9 +117,9 @@ const Products = ({ navigate }) => {
                     breakpointCols={breakpointColumnsObj}
                     className="my-masonry-grid flex mx-[-10px]"
                     columnClassName="my-masonry-grid_column">
-                    {products?.products?.map(el => (
+                    {products?.products?.map((el, index) => (
                         <Product
-                            key={el.id}
+                            key={index}
                             pid={el.id}
                             productData={el}
                             normal={true}
