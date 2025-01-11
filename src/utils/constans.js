@@ -12,16 +12,16 @@ export const navigation = [
         value: 'Sản phẩm',
         path: `/${path.PRODUCTS}`
     },
-    {
-        id: 3,
-        value: 'Thương hiệu',
-        path: `/${path.BRANDS}`
-    },
-    {
-        id: 4,
-        value: 'Blog',
-        path: `/${path.BLOG}`
-    },
+    // {
+    //     id: 3,
+    //     value: 'Thương hiệu',
+    //     path: `/${path.BRANDS}`
+    // },
+    // {
+    //     id: 4,
+    //     value: 'Blog',
+    //     path: `/${path.BLOG}`
+    // },
     {
         id: 5,
         value: 'Liên hệ',
@@ -50,13 +50,10 @@ export const sidebar = [
         name: 'Đồng hồ thông minh',
         img: 'https://bizweb.dktcdn.net/100/508/659/collections/dfd.jpg?v=1705933843270'
     },
-    {
-        name: 'Dây đồng hồ',
-        img: 'https://bizweb.dktcdn.net/100/508/659/collections/dlfmd.jpg?v=1705933961333'
-    },
+
 ]
 
-const { RxDashboard, BiSolidUserRectangle, PiWatchFill, FaShoppingCart, FaRegUser, CgClipboard, FaRegHeart } = icons
+const { RxDashboard, BiSolidUserRectangle, PiWatchFill, RiPriceTag3Fill, IoMdLogOut, TbLicense, GrSort, FaShoppingCart, FaRegUser, CgClipboard, FaRegHeart } = icons
 
 export const adminSidebar = [
     {
@@ -73,13 +70,13 @@ export const adminSidebar = [
         path: `/${path.ADMIN}/${path.MANAGE_USER}`,
         icon: <BiSolidUserRectangle size={20} />
     },
-    {
-        id: 3,
-        type: 'SINGLE',
-        text: 'Phân quyền',
-        path: `/${path.ADMIN}/phan-quyen`,
-        icon: <BiSolidUserRectangle size={20} />
-    },
+    // {
+    //     id: 3,
+    //     type: 'SINGLE',
+    //     text: 'Phân quyền',
+    //     path: `/${path.ADMIN}/phan-quyen`,
+    //     icon: <TbLicense size={20} />
+    // },
     {
         id: 4,
         type: 'PARENT',
@@ -98,11 +95,43 @@ export const adminSidebar = [
     },
     {
         id: 5,
+        type: 'PARENT',
+        text: 'Thương hiệu',
+        icon: <RiPriceTag3Fill size={20} />,
+        submenu: [
+            {
+                text: 'Tạo thương hiệu',
+                path: `/${path.ADMIN}/${path.CREATE_BRAND}`,
+            },
+            {
+                text: 'Quản lý thương hiệu',
+                path: `/${path.ADMIN}/${path.MANAGE_BRAND}`,
+            }
+        ]
+    },
+    {
+        id: 6,
+        type: 'PARENT',
+        text: 'Danh mục sản phẩm',
+        icon: <GrSort size={20} />,
+        submenu: [
+            {
+                text: 'Tạo danh mục sản phẩm',
+                path: `/${path.ADMIN}/${path.CREATE_PRODUCT_CATEGORY}`,
+            },
+            {
+                text: 'Quản lý danh mục sản phẩm',
+                path: `/${path.ADMIN}/${path.MANAGE_PRODUCT_CATEGORY}`,
+            }
+        ]
+    },
+    {
+        id: 7,
         type: 'SINGLE',
-        text: 'Đơn hàng',
+        text: 'Quản lý đơn hàng',
         path: `/${path.ADMIN}/${path.MANAGE_ORDER}`,
         icon: <FaShoppingCart size={20} />
-    }
+    },
 
 
 ]
@@ -145,7 +174,7 @@ export const roles = [
 export const blockStatus = [
     {
         code: true,
-        value: 'Bị chặn'
+        value: 'Khóa tài khoản'
     },
     {
         code: false,
@@ -191,20 +220,6 @@ export const productInfoTabs = [
     }
 ]
 
-export const brands = [
-    'Rolex',
-    'Omega',
-    'Hublot',
-    'Gucci',
-    'Cartier',
-    'Breitling',
-    'Zenith',
-    'Seiko',
-    'Tissot',
-    'Hermes',
-    'Citizen',
-]
-
 export const sortBy = [
     {
         id: 1,
@@ -234,5 +249,54 @@ export const paymentMethod = [
     'paylater',
     'paypal',
     'bank'
+]
 
+export const orderStatus = [
+    {
+        label: 'Tất cả',
+        value: 'all'
+    },
+    {
+        label: 'Đã hủy',
+        value: 'Cancelled'
+    },
+    {
+        label: 'Đang xử lý',
+        value: 'Processing'
+    },
+    {
+        label: 'Thành công',
+        value: 'Succeed'
+    }
+]
+
+
+export const voteOption = [
+    {
+        id: 1,
+        text: 'Rất kém',
+    },
+    {
+        id: 2,
+        text: 'Kém',
+    },
+    {
+        id: 3,
+        text: 'Bình thường',
+    },
+    {
+        id: 4,
+        text: 'Tốt',
+    },
+    {
+        id: 5,
+        text: 'Rất tốt',
+    }
+]
+
+export const tutorial = [
+    `<p>Sở th&iacute;ch của mỗi người l&agrave; kh&aacute;c nhau, c&oacute; người tay nhỏ nhưng lại th&iacute;ch đeo đồng hồ size to, c&oacute; người tay to nhưng lại th&iacute;ch đeo đồng hồ size nhỏ, nhưng để đeo 1 chiếc đồng hồ mang t&iacute;nh thẩm mỹ nhất th&igrave; bạn cũng n&ecirc;n tham khảo c&aacute;ch lựa size đồng hồ dưới đ&acirc;y nh&eacute;:<br><br><strong>Bước 1:</strong>&nbsp;Đo size cổ tay (chu vi cổ tay)</p>
+<p><img src="https://bizweb.dktcdn.net/100/508/659/files/q9lyddn.png?v=1705977764558" data-thumb="original"></p>
+<p><strong>Bước 2:</strong>&nbsp;Tham chiếu size cổ tay của bạn để chọn size mặt đồng hồ ph&ugrave; hợp dưới đ&acirc;y</p>
+<p><img src="https://bizweb.dktcdn.net/100/508/659/files/vaolz7d.png?v=1705977777038" data-thumb="original"></p>`
 ]

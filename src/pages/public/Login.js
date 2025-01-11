@@ -2,7 +2,7 @@ import React, { useState, useCallback, memo } from 'react'
 import { InputField, Button, Loading } from 'components'
 import path from 'utils/path'
 import { Link, useSearchParams } from 'react-router-dom'
-import { apiLogin, apiForgotPassword } from 'apis/user'
+import { apiLogin, apiForgotPassword } from 'apis'
 import Swal from 'sweetalert2'
 import { login } from 'store/user/userSlice'
 import { showModal } from 'store/app/appSlice'
@@ -23,6 +23,7 @@ const Login = ({ dispatch, navigate }) => {
         email: '',
         password: '',
     })
+    const [confirmPassword, setConfirmPassword] = useState('')
 
     const [isForgotPassword, setIsForgotPassword] = useState(false)
     const [email, setEmail] = useState('')
@@ -31,13 +32,12 @@ const Login = ({ dispatch, navigate }) => {
     const handleForgotPassword = async () => {
         dispatch(showModal({ isShowModal: true, modalChidren: <Loading /> }))
         const response = await apiForgotPassword({ email })
+        dispatch(showModal({ isShowModal: false, modalChidren: null }))
 
         if (response.success) {
             toast.success(response.mes)
+            setIsForgotPassword(false)
         } else toast.error(response.mes)
-
-        dispatch(showModal({ isShowModal: false, modalChidren: <null /> }))
-
 
     }
     const handleSubmit = useCallback(async () => {
@@ -52,7 +52,7 @@ const Login = ({ dispatch, navigate }) => {
                 setInvalidFields((prev) => [
                     ...prev,
                     { name: 'auth', mes: response.mes },
-                ]);
+                ])
             }
         }
     }, [payload, dispatch, navigate])
@@ -68,6 +68,14 @@ const Login = ({ dispatch, navigate }) => {
                     <input type="text" id='email' placeholder='Địa chỉ email'
                         className='px-4 py-2 border rounded-md outline-none'
                         value={email} onChange={e => setEmail(e.target.value)}
+                    />
+                    <input
+                        type="password"
+                        id='confirmPassword'
+                        placeholder='Nhập lại mật khẩu'
+                        className='px-4 py-2 border rounded-md outline-none'
+                        value={confirmPassword}
+                        onChange={e => setConfirmPassword(e.target.value)}
                     />
                     <div className='flex justify-center items-center mt-4 w-full '>
                         <Button
@@ -122,7 +130,7 @@ const Login = ({ dispatch, navigate }) => {
                     <Link className='hover:text-main cursor-pointer' onClick={() => setIsForgotPassword(true)}>Quên mật khẩu</Link>
                     <Link className='hover:text-main cursor-pointer' to={`/${path.REGISTER}`}>Đăng ký tài khoản</Link>
                 </div>
-                <span className='text-sm flex text-center mb-2'>Hoặc đăng nhập bằng</span>
+                {/* <span className='text-sm flex text-center mb-2'>Hoặc đăng nhập bằng</span>
                 <div>
                     <Button
                         name='Facebook'
@@ -135,7 +143,7 @@ const Login = ({ dispatch, navigate }) => {
                         iconBefore={<FaGoogle className='mr-3' />}
 
                     />
-                </div>
+                </div> */}
             </div>
         </div>
     )

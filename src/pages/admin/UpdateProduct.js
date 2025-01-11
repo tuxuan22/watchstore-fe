@@ -28,6 +28,7 @@ const UpdateProduct = ({ editProduct, render, setEditProduct, dispatch }) => {
     useEffect(() => {
         reset({
             title: editProduct?.title || '',
+            code: editProduct?.code || '',
             price: editProduct?.price || '',
             quantity: editProduct?.quantity || 0,
             color: editProduct?.color || '',
@@ -123,18 +124,33 @@ const UpdateProduct = ({ editProduct, render, setEditProduct, dispatch }) => {
                 <form
                     onSubmit={handleSubmit(handleUpdateProduct)}
                 >
-                    <InputForm
-                        label='Tên sản phẩm'
-                        register={register}
-                        errors={errors}
-                        id='title'
-                        validate={{
-                            required: 'Vui lòng nhập tên sản phẩm',
-                        }}
-                        styles='flex-auto'
-                        fullWidth
-                        placeholder='Tên sản phẩm'
-                    />
+                    <div className='w-full my-6 flex gap-4'>
+
+                        <InputForm
+                            label='Tên sản phẩm'
+                            register={register}
+                            errors={errors}
+                            id='title'
+                            validate={{
+                                required: 'Vui lòng nhập tên sản phẩm',
+                            }}
+                            styles='flex-auto'
+                            fullWidth
+                            placeholder='Tên sản phẩm'
+                        />
+                        <InputForm
+                            label='Mã sản phẩm'
+                            register={register}
+                            errors={errors}
+                            id='code'
+                            validate={{
+                                required: 'Vui lòng nhập mã sản phẩm',
+                            }}
+                            styles='flex-auto'
+                            fullWidth
+                            placeholder='Mã sản phẩm'
+                        />
+                    </div>
                     <div className='w-full my-6 flex gap-4'>
                         <InputForm
                             label='Giá sản phẩm'

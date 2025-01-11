@@ -4,7 +4,7 @@ import { getNewProducts } from './asyncActions'
 export const productSlice = createSlice({
     name: 'product',
     initialState: {
-        newProducts: null,
+        products: null,
         errorMessage: '',
 
     },
@@ -21,7 +21,7 @@ export const productSlice = createSlice({
         builder.addCase(getNewProducts.fulfilled, (state, action) => {
             // Tắt trạng thái loading, lưu thông tin product vào store
             state.isLoading = false
-            state.newProducts = action.payload
+            state.products = action.payload
         })
 
         // Khi thực hiện action login thất bại (Promise rejected)

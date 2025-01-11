@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { createSearchParams, Link } from 'react-router-dom'
 import path from 'utils/path'
 import logo from 'assets/logo.png'
 import { useSelector } from 'react-redux'
@@ -10,42 +10,43 @@ import withBaseComponent from 'hocs/withBaseComponent'
 import { getCurrent } from 'store/user/asyncActions'
 import { createVNPayPayment } from 'apis'
 
-const Checkout = ({ dispatch }) => {
+const Checkout = ({ dispatch, navigate, location }) => {
     const { currentCart, current } = useSelector(state => state.user)
     const [paymentMethod, setPaymentMethod] = useState('cod')
     const [isSuccess, setIsSuccess] = useState(false)
     const handlePaymentMethodChange = (e) => {
         setPaymentMethod(e.target.value)
     }
-    const { register, formState: { errors }, watch, setValue } = useForm()
-    const address = watch('address')
-
-    useEffect(() => {
-        setValue('address', current?.address)
-    }, [current])
 
     useEffect(() => {
         if (isSuccess) dispatch(getCurrent())
     }, [isSuccess])
 
-    const handleVNPayPayment = async () => {
-        try {
-            const payload = {
-                amount: currentCart?.reduce((sum, el) => +el?.price * el.quantity + sum, 0),
-                orderBy: current?._id,
-                address,
-                orderDescription: 'Thanh toán đơn hàng VNPay'
-            }
+    // const handleVNPayPayment = async () => {
+    //     try {
+    //         const payload = {
+    //             amount: currentCart?.reduce((sum, el) => +el?.price * el.quantity + sum, 0),
+    //             orderBy: current?._id,
+    //             address: current?.address,
+    //             orderDescription: 'Thanh toán đơn hàng VNPay'
+    //         }
 
-            // Gọi API để lấy URL VNPay
-            const { paymentUrl } = await createVNPayPayment(payload)
+    //         // Gọi API để lấy URL VNPay
+    //         const { paymentUrl } = await createVNPayPayment(payload)
 
-            // Chuyển hướng người dùng đến VNPay
-            window.location.href = paymentUrl
-        } catch (error) {
-            console.error('VNPay Payment Error:', error)
-            alert('Thanh toán VNPay thất bại. Vui lòng thử lại.')
-        }
+    //         // Chuyển hướng người dùng đến VNPay
+    //         window.location.href = paymentUrl
+    //     } catch (error) {
+    //         console.error('VNPay Payment Error:', error)
+    //         alert('Thanh toán VNPay thất bại. Vui lòng thử lại.')
+    //     }
+    // }
+
+    const handleChangeAdd = () => {
+        navigate({
+            pathname: `/${path.MEMBER}/${path.PERSONAL}`,
+            search: createSearchParams({ redirect: location.pathname }).toString()
+        })
     }
 
     return (
@@ -99,7 +100,7 @@ const Checkout = ({ dispatch }) => {
                                         onChange={handlePaymentMethodChange} />
                                     <span>Thanh toán Paypal</span>
                                 </label>
-                                <label className='flex items-center'>
+                                {/* <label className='flex items-center'>
                                     <input
                                         type='radio'
                                         name='paymentMethod'
@@ -109,41 +110,32 @@ const Checkout = ({ dispatch }) => {
                                         onChange={handlePaymentMethodChange}
                                     />
                                     <span>Thanh toán VNPay</span>
-                                </label>
+                                </label> */}
                             </div>
                         </div>
                     </div>
 
-                    <div className='bg-white  flex flex-col col-span-3 gap-4 p-4 h-fit'>
-                        <div>
+                    <div className='bg-white flex flex-col col-span-3 gap-4 p-4 h-fit'>
+                        <div className=' flex flex-col gap-4'>
 
-                            <div className='flex flex-col gap-4'>
-                                <InputForm
-                                    label='Địa chỉ'
-                                    register={register}
-                                    errors={errors}
-                                    id='address'
-                                    validate={{
-                                        required: 'Vui lòng nhập địa chỉ',
-                                    }}
-                                    styles='flex gap-2 items-center'
+                            <div className='flex flex-col'>
+                                <div className='flex justify-between '>
+                                    <span className='text-base font-medium'> Địa chỉ giao hàng </span>
+                                    <span onClick={handleChangeAdd} className='text-base text-blue-600 cursor-pointer'>Thay đổi</span>
+                                </div>
 
-                                    type='text'
-                                />
-                                <span className='text-sm'>
-
-                                </span>
+                                <span className='text-sm'>{current?.address} </span>
                             </div>
                             <div className='flex gap-4'>
-                                <span className='text-sm font-medium'>Phí vận chuyển</span>
+                                <span className='text-base font-medium'>Phí vận chuyển</span>
                                 {/* <span className='text-lg'>{formatMoney(120)}</span> */}
                             </div>
                             <div className='flex gap-4'>
-                                <span className='text-sm font-medium'>Tổng tiền</span>
+                                <span className='text-base font-medium'>Tổng tiền</span>
                                 <span className='text-red-500'>{`${formatMoney(currentCart?.reduce((sum, el) => +el?.price * el.quantity + sum, 0))}`}</span>
                             </div>
                         </div>
-                        {address && <div>
+                        <div>
                             {paymentMethod === 'cod' && (
 
                                 <div className='flex justify-center'>
@@ -157,7 +149,7 @@ const Checkout = ({ dispatch }) => {
                                         products: currentCart,
                                         total: Math.round(+currentCart?.reduce((sum, el) => +el?.price * el.quantity + sum, 0) / 25395.02),
                                         orderBy: current?._id,
-                                        address
+                                        address: current?.address
                                     }}
                                     amount={Math.round(+currentCart?.reduce((sum, el) => +el?.price * el.quantity + sum, 0) / 25395.02)} />
 
@@ -166,12 +158,11 @@ const Checkout = ({ dispatch }) => {
                                 <div className='flex justify-center'>
                                     <Button
                                         name='Thanh toán với VNPay'
-                                        onClick={handleVNPayPayment}
+                                    // onClick={handleVNPayPayment}
                                     />
                                 </div>
                             )}
-                        </div>}
-                        {/* <Paypal /> */}
+                        </div>
 
                     </div>
                 </div>

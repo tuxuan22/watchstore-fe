@@ -13,6 +13,7 @@ export { default as Button } from './buttons/Button'
 export { default as OtpInput } from './inputs/OtpInput'
 export { default as Loading } from './common/Loading'
 export { default as Modal } from './common/Modal'
+export { default as DetailOrder } from './order/DetailOrder'
 export { default as AdminSidebar } from './sidebars/AdminSidebar'
 export { default as MemberSidebar } from './sidebars/MemberSidebar'
 export { default as BreadCrumb } from './common/BreadCrumb'
@@ -34,6 +35,7 @@ export { default as ProductRatings } from './rating/ProductRatings'
 export { default as RatingOverview } from './rating/RatingOverview'
 export { default as RatingLevel } from './rating/RatingLevel'
 export { default as Comment } from './rating/Comment'
+export { default as VoteOption } from './rating/VoteOption'
 
 
 

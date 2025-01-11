@@ -13,14 +13,38 @@ const Sidebar = () => {
         infinite: false,
         slidesToShow: 5,
         slidesToScroll: 1,
+        responsive: [
+            {
+                breakpoint: 1024,
+                settings: {
+                    slidesToShow: 4,
+                    // slidesToScroll: 1,
+                }
+            },
+            {
+                breakpoint: 768,
+                settings: {
+                    slidesToShow: 2,
+                    // slidesToScroll: 1,
+                }
+            },
+            {
+                breakpoint: 640,
+                settings: {
+                    slidesToShow: 2,
+                    // slidesToScroll: 1,
+
+                }
+            }
+        ]
     }
 
     const { isShowModal } = useSelector(state => state.app)
 
     return (
 
-        <div className='w-main mb-5 '>
-            <span className='text-[24px] font-medium my-5 flex justify-center'>Danh mục nổi bật</span>
+        <div className='sm:w-[540px] md:w-[940px] lg:w-main mb-5 '>
+            <span className='text-[24px] lg:text-[24px] font-medium my-3 lg:my-5 flex justify-center'>Danh mục nổi bật</span>
             <Slider className='custom-slider' {...settings}>
                 {sidebar.map((i) => (
 

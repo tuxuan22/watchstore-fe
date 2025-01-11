@@ -25,17 +25,13 @@ const ManageProduct = ({ navigate, location }) => {
 
   const fetchProducts = async (params) => {
     const response = await apiGetProducts({ ...params, limit: 5 })
-    if (response.success) {
-      setCounts(response.counts)
-      setProducts(response.products)
-
-    }
+    if (response.success) setProducts(response)
 
   }
 
   const render = useCallback(() => {
     setUpdate(!update)
-  })
+  }, [update])
 
   const queriesDebounce = useDebounce(watch('q'), 800)
 
@@ -68,7 +64,7 @@ const ManageProduct = ({ navigate, location }) => {
       confirmButtonText: 'Xóa'
     }).then(async (result) => {
       if (result.isConfirmed) {
-        const response = await apiDeleteProduct([pid])
+        const response = await apiDeleteProduct(pid)
         if (response.success) {
           render()
           toast.success(response.mes)
@@ -103,110 +99,119 @@ const ManageProduct = ({ navigate, location }) => {
               id='q'
               register={register}
               errors={errors}
-              placeholder='Tìm kiểu theo tên sản phẩm,...'
+              placeholder='Tìm kiếm theo tên sản phẩm,...'
               fullWidth
               className={'w-[500px] bg-white border border-gray-200'}
             />
           </form>
         </div>
-        <form className='overflow-x-auto'>
-          <table className='min-w-full table-auto mb-6 text-left'>
-            <thead className='font-bold bg-gray-200 text-[13px]'>
-              <tr>
-                <th className='px-4 py-2'>#</th>
-                <th className='px-4 py-2'>Tên sản phẩm</th>
-                <th className='px-4 py-2'>Ảnh sản phẩm</th>
-                <th className='px-4 py-2'>Thương hiệu</th>
-                <th className='px-4 py-2'>Danh mục</th>
-                <th className='px-4 py-2'>Giá</th>
-                <th className='px-4 py-2'>Số lượng</th>
-                <th className='px-4 py-2'>Đã bán</th>
-                <th className='px-4 py-2'> Màu</th>
-                <th className='px-4 py-2'> Lượt đánh giá</th>
-                <th className='px-4 py-2'>Các biến thể</th>
-                <th className='px-4 py-2'> Cập nhật lúc</th>
-                <th className='px-4 py-2 w-[120px]'>Hành động</th>
-              </tr>
 
-            </thead>
-            <tbody>
-              {products?.map((el, idx) => (
-                <tr key={el._id} className='border border-gray-200'>
-                  <td className='py-2 px-4 '>{((+params.get('page') > 1 ? +params.get('page') - 1 : 0) * 5) + 1 + idx}</td>
-                  <td className='py-2 px-4 '>
-
-                    <span>{el.title}</span>
-
-                  </td>
-                  <td className='py-2 px-4 '>
-
-                    <img src={el.thumb} alt="thumb" className='w-12 h-12 object-cover' />
-                  </td>
-                  <td className='py-2 px-4 '>
-
-                    <span>{el.brand}</span>
-
-                  </td>
-                  <td className='py-2 px-4 '>
-
-                    <span>{el.category}</span>
-
-                  </td>
-                  <td className='py-2 px-4 '>
-
-                    <span>{formatMoney(Number(el.price))}</span>
-
-                  </td>
-                  <td className='py-2 px-4 '>
-
-                    <span>{el.quantity}</span>
-
-                  </td>
-                  <td className='py-2 px-4 '>
-
-                    <span>{el.sold}</span>
-
-                  </td>
-                  <td className='py-2 px-4 '>
-                    {el.color}
-                  </td>
-                  <td className='py-2 px-4 '>
-                    {el.totalRatings}
-                  </td>
-                  <td className='py-2 px-4 '>
-                    {el?.variants?.length || 0}
-                  </td>
-
-                  <td className='py-2 px-4 '>
-                    {moment(el.updatedAt).format('DD/MM/YYYY')}
-                  </td>
-                  <td className='flex justify-between py-2 px-4'>
-
-                    <span
-                      onClick={() => setEditProduct(el)}
-                      className={'cursor-pointer  py-3 text-yellow-500 hover:text-yellow-400 '}
-                    ><BiEdit size={20} /></span>
-                    <span
-                      onClick={() => handleDeleteProduct(el._id)}
-                      className={'cursor-pointer py-3  text-red-600 hover:text-red-500'}
-                    ><RiDeleteBin6Line size={20} /></span>
-                    <span
-                      onClick={() => setCustomizeVariant(el)}
-                      className={'cursor-pointer py-3  text-blue-600 hover:text-blue-500'}
-                    ><GoMultiSelect size={20} /></span>
-
-                  </td>
+        <form>
+          <div className='overflow-x-auto'>
+            <table className='w-[1580px] mb-6 text-left'>
+              <thead className='font-bold bg-gray-200 text-[13px]'>
+                <tr>
+                  <th className='px-4 py-2'>#</th>
+                  <th className='px-4 py-2'>Tên sản phẩm</th>
+                  <th className='px-4 py-2'>Mã sản phẩm</th>
+                  <th className='px-4 py-2'>Ảnh sản phẩm</th>
+                  <th className='px-4 py-2'>Thương hiệu</th>
+                  <th className='px-4 py-2'>Danh mục</th>
+                  <th className='px-4 py-2'>Giá</th>
+                  <th className='px-4 py-2'>Số lượng</th>
+                  <th className='px-4 py-2'>Đã bán</th>
+                  <th className='px-4 py-2'> Màu</th>
+                  <th className='px-4 py-2'> Lượt đánh giá</th>
+                  <th className='px-4 py-2'>Các biến thể</th>
+                  <th className='px-4 py-2'> Cập nhật lúc</th>
+                  <th className='px-4 py-2 w-[120px]'>Hành động</th>
                 </tr>
 
-              ))}
-            </tbody>
+              </thead>
+              <tbody>
+                {products?.products?.map((el, idx) => (
+                  <tr key={el._id} className='border border-gray-200'>
+                    <td className='py-2 px-4 '>{((+params.get('page') > 1 ? +params.get('page') - 1 : 0) * 5) + 1 + idx}</td>
+                    <td className='py-2 px-4 '>
 
-          </table>
+                      <span>{el.title}</span>
+
+                    </td>
+                    <td className='py-2 px-4 '>
+
+                      <span>{el.code}</span>
+                    </td>
+                    <td className='py-2 px-4 '>
+
+                      <img src={el.thumb} alt="thumb" className='w-12 h-12 object-cover' />
+                    </td>
+                    <td className='py-2 px-4 '>
+
+                      <span>{el.brand}</span>
+
+                    </td>
+                    <td className='py-2 px-4 '>
+
+                      <span>{el.category}</span>
+
+                    </td>
+                    <td className='py-2 px-4 '>
+
+                      <span>{formatMoney(Number(el.price))}</span>
+
+                    </td>
+                    <td className='py-2 px-4 '>
+
+                      <span>{el.quantity}</span>
+
+                    </td>
+                    <td className='py-2 px-4 '>
+
+                      <span>{el.sold}</span>
+
+                    </td>
+                    <td className='py-2 px-4 '>
+                      {el.color}
+                    </td>
+                    <td className='py-2 px-4 '>
+                      {el.totalRatings}
+                    </td>
+                    <td className='py-2 px-4 '>
+                      {el?.variants?.length || 0}
+                    </td>
+
+                    <td className='py-2 px-4 '>
+                      {moment(el.updatedAt).format('DD/MM/YYYY')}
+                    </td>
+                    <td className='flex justify-between py-2 px-4'>
+
+                      <span
+                        onClick={() => setEditProduct(el)}
+                        className={'cursor-pointer  py-3 text-yellow-500 hover:text-yellow-400 '}
+                      ><BiEdit size={20} /></span>
+                      <span
+                        onClick={() => handleDeleteProduct(el._id)}
+                        className={'cursor-pointer py-3  text-red-600 hover:text-red-500'}
+                      ><RiDeleteBin6Line size={20} /></span>
+                      <span
+                        onClick={() => setCustomizeVariant(el)}
+                        className={'cursor-pointer py-3  text-blue-600 hover:text-blue-500'}
+                      ><GoMultiSelect size={20} /></span>
+
+                    </td>
+                  </tr>
+
+                ))}
+              </tbody>
+
+            </table>
+          </div>
         </form>
+
       </div>
       <div className='flex justify-center'>
         <Pagination
-          totalCount={counts}
+          totalCount={products?.counts}
         />
       </div>
     </div>

@@ -30,7 +30,7 @@ const ManageUser = () => {
   const [editItem, setEditItem] = useState(null)
   const [params] = useSearchParams()
   const fetchUsers = async (params) => {
-    const response = await apiGetUsers({ ...params, limit: 10 })
+    const response = await apiGetUsers({ ...params, limit: 5 })
     if (response.success) setUser(response)
   }
 
@@ -125,7 +125,7 @@ const ManageUser = () => {
                 <tr key={el._id} className='border border-gray-200'>
                   <td className='py-2 px-4 '>{((+params.get('page') > 1 ? +params.get('page') - 1 : 0) * 10) + 1 + idx}</td>
                   <td className='py-2 px-4 '>
-                    {editItem?._id === el._id
+                    {/* {editItem?._id === el._id
                       ? <InputForm
                         register={register}
                         fullWidth
@@ -140,10 +140,12 @@ const ManageUser = () => {
                           }
                         }}
                       />
-                      : <span>{el.email}</span>}
+                      : 
+                    } */}
+                    <span>{el.email}</span>
                   </td>
                   <td className='py-2 px-4 '>
-                    {editItem?._id === el._id
+                    {/* {editItem?._id === el._id
                       ? <InputForm
                         register={register}
                         fullWidth
@@ -152,10 +154,12 @@ const ManageUser = () => {
                         defaultValue={editItem?.firstname}
                         validate={{ required: 'Hãy nhập tên' }}
                       />
-                      : <span>{el.firstname}</span>}
+                      : 
+                    } */}
+                    <span>{el.firstname}</span>
                   </td>
                   <td className='py-2 px-4 '>
-                    {editItem?._id === el._id
+                    {/* {editItem?._id === el._id
                       ? <InputForm
                         register={register}
                         fullWidth
@@ -164,10 +168,12 @@ const ManageUser = () => {
                         defaultValue={editItem?.lastname}
                         validate={{ required: 'Hãy nhập họ' }}
                       />
-                      : <span>{el.lastname}</span>}
+                      : 
+                    } */}
+                    <span>{el.lastname}</span>
                   </td>
                   <td className='py-2 px-4 '>
-                    {editItem?._id === el._id
+                    {/* {editItem?._id === el._id
                       ? <Select
                         register={register}
                         fullWidth
@@ -177,10 +183,12 @@ const ManageUser = () => {
                         validate={{ required: 'Hãy chọn vai trò' }}
                         options={roles}
                       />
-                      : <span>{roles.find(role => +role.code === +el.role)?.value}</span>}
+                      :
+                    } */}
+                    <span>{roles.find(role => +role.code === +el.role)?.value}</span>
                   </td>
                   <td className='py-2 px-4 '>
-                    {editItem?._id === el._id
+                    {/* {editItem?._id === el._id
                       ? <InputForm
                         register={register}
                         fullWidth
@@ -195,7 +203,9 @@ const ManageUser = () => {
                           }
                         }}
                       />
-                      : <span>{el.mobile}</span>}
+                    }
+                    : */}
+                    <span>{el.mobile}</span>
                   </td>
                   <td className='py-2 px-4 '>
                     {editItem?._id === el._id
@@ -226,10 +236,10 @@ const ManageUser = () => {
                           onClick={() => setEditItem(el)}
                           className={'cursor-pointer  py-3 text-yellow-500 hover:text-yellow-400 '}
                         ><BiEdit size={20} /></span>
-                        <span
+                        {/* <span
                           onClick={() => handleDelete(el._id)}
                           className={'cursor-pointer py-3  text-red-600 hover:text-red-500'}
-                        ><RiDeleteBin6Line size={20} /></span>
+                        ><RiDeleteBin6Line size={20} /></span> */}
                       </div>
                     }
                   </td>

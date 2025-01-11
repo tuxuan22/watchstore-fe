@@ -1,5 +1,5 @@
 import React, { memo, useEffect, useState } from 'react'
-import { productInfoTabs } from 'utils/constans'
+import { productInfoTabs, tutorial } from 'utils/constans'
 import DOMPurify from 'dompurify'
 import { RatingLevel, Comment } from 'components'
 import { renderStar } from 'utils/helpers'
@@ -36,6 +36,14 @@ const ProductInfo = ({ product }) => {
                                 ></div>
                             )}
                         </ul>
+                    </div>
+                )}
+                {activedTab === 3 && (
+                    <div
+                        className='text-sm'
+                        dangerouslySetInnerHTML={{
+                            __html: DOMPurify.sanitize(tutorial),
+                        }}>
                     </div>
                 )}
                 {activedTab === 4 && (

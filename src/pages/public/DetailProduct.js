@@ -20,6 +20,30 @@ const DetailProduct = ({ isQuickView, data, dispatch, navigate, location }) => {
         infinite: false,
         slidesToShow: 5,
         slidesToScroll: 1,
+        responsive: [
+            {
+                breakpoint: 1024,
+                settings: {
+                    slidesToShow: 4,
+                    // slidesToScroll: 1,
+                }
+            },
+            {
+                breakpoint: 768,
+                settings: {
+                    slidesToShow: 2,
+                    // slidesToScroll: 1,
+                }
+            },
+            {
+                breakpoint: 640,
+                settings: {
+                    slidesToShow: 2,
+                    // slidesToScroll: 1,
+
+                }
+            }
+        ]
     }
     const params = useParams()
     const { current } = useSelector(state => state.user)
@@ -124,7 +148,6 @@ const DetailProduct = ({ isQuickView, data, dispatch, navigate, location }) => {
         if (flag === 'minus' && quantity === 1) return
         if (flag === 'minus') setQuantity(prev => +prev - 1)
         if (flag === 'plus') setQuantity(prev => +prev + 1)
-        console.log(quantity);
 
 
     }, [quantity])
@@ -145,6 +168,7 @@ const DetailProduct = ({ isQuickView, data, dispatch, navigate, location }) => {
                 search: createSearchParams({ redirect: location.pathname }).toString()
             })
         })
+
         const response = await apiUpdateCart({
             pid,
             color: selectedProduct?.color || product?.color,
@@ -162,11 +186,15 @@ const DetailProduct = ({ isQuickView, data, dispatch, navigate, location }) => {
     }
 
     return (
-        <div ref={titleRef} onClick={e => e.stopPropagation()} className='bg-bgc'>
+        <div
+            ref={titleRef}
+            onClick={e => e.stopPropagation()}
+            className='bg-bgc w-main flex flex-col items-center px-4 lg:px-0'
+        >
             {!isQuickView && <div className='w-main p-4'>
                 <BreadCrumb title={title} category={category} />
             </div>}
-            <div className='w-main my-4 flex'>
+            <div className='w-main my-4 flex justify-center'>
                 <div className='flex-1 flex flex-col gap-4 items-center px-2.5'>
                     <img src={selectedProduct.thumb || selectedImage} alt="product" className='w-[565px] h-[565px] object-cover' />
                     {!isQuickView && <div className=' w-10/12'>
@@ -218,25 +246,31 @@ const DetailProduct = ({ isQuickView, data, dispatch, navigate, location }) => {
                         </div>
                     </div>
 
-                    <div className='flex gap-2'>
-                        <SelectQuantity
-                            quantity={quantity}
-                            handleQuantity={handleQuantity}
-                            handleChangeQuantity={handleChangeQuantity}
-                        />
-                        <Button handleOnClick={handleAddToCart} name='Thêm vào giỏ hàng'
-                            styles='h-[50px] bg-main text-white w-[200px] hover:bg-white hover:border-main hover:text-main hover:border'
-                        />
-                        {/* <Button name='Mua ngay'
-                            styles='h-[50px] bg-red-600 text-white w-[200px] hover:bg-red-500'
-                        /> */}
-                    </div>
+                    {product?.quantity > 0 ? (
+                        <div className='flex gap-2'>
+                            <SelectQuantity
+                                quantity={quantity}
+                                handleQuantity={handleQuantity}
+                                handleChangeQuantity={handleChangeQuantity}
+                            />
+                            <Button handleOnClick={handleAddToCart} name='Thêm vào giỏ hàng'
+                                styles='h-[50px] bg-main text-white w-[200px] hover:bg-white hover:border-main hover:text-main hover:border'
+                            />
+
+                        </div>
+                    )
+                        : (
+                            <span className='text-red-500 font-normal text-md border border-red-500 p-4 w-1/2'>
+                                Sản phẩm đã hết hàng
+                            </span>
+                        )
+                    }
                 </div>
             </div>
-            {!isQuickView && <div className='w-main my-4 '>
+            {!isQuickView && <div className=' w-main my-4 '>
                 <ProductInfo product={product} totalCount={18} />
             </div>}
-            {!isQuickView && <div className='w-main my-4'>
+            {!isQuickView && <div className='sm:w-[540px] md:w-[940px] lg:w-main mb-5 my-4'>
                 <h3 className='mb-4 text-2xl font-semibold'>Sản phẩm tương tự</h3>
                 <CustomSlider normal={true} products={productRelate} />
             </div>}

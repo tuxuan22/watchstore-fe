@@ -29,12 +29,6 @@ export const apiDeleteProduct = (pid) => axios({
 
 })
 
-export const apiCreateOrder = (data) => axios({
-    url: '/order/',
-    method: 'POST',
-    data
-
-})
 
 export const apiAddVariant = (data, pid) => axios({
     url: '/product/' + pid,
@@ -42,9 +36,17 @@ export const apiAddVariant = (data, pid) => axios({
     data
 
 })
+
+export const apiGetUserRatings = () => axios({
+    url: '/product/ratingUser',
+    method: 'GET',
+})
+
 export const apiRatings = (data) => axios({
     url: '/product/ratings',
     method: 'PUT',
     data
 })
+
+
 

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { apiGetProducts } from 'apis/product'
+import { apiGetProducts } from 'apis'
 import { CustomSlider } from 'components'
 import { productTabs } from 'utils/constans'
 import clsx from 'clsx'
@@ -33,7 +33,7 @@ const ProductTab = () => {
 
   return (
 
-    <div className='w-main mb-5 '>
+    <div className='sm:w-[540px] md:w-[940px] lg:w-main mb-5 '>
       <div className='flex text-2xl my-5 justify-center'>
         {productTabs.map(el => (
           <span

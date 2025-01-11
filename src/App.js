@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import { Route, Routes } from 'react-router-dom'
 import { Home, Login, Register, Public, Products, Brands, Blog, Contact, DetailProduct, EmailVerify, ResetPassword, DetailCart } from 'pages/public'
-import { AdminLayout, Dashboard, ManageUser, ManageProduct, ManageOrder, CreateProduct, UpdateProduct } from 'pages/admin'
+import { AdminLayout, Dashboard, ManageUser, ManageProduct, ManageOrder, CreateProduct, UpdateProduct, CreateBrand, ManageBrand, CreateProductCategory, ManageProductCategory, UpdateBrand } from 'pages/admin'
 import { MemberLayout, Personal, MyOrder, Wishlist, Checkout } from 'pages/member'
 import path from 'utils/path'
 import { useDispatch, useSelector } from 'react-redux'
@@ -20,7 +20,7 @@ function App() {
   return (
     <div className='h-screen font-main '>
 
-      {isShowCart && <div onClick={() => dispatch(showCart())} className='absolute inset-0 bg-overlay z-50 flex justify-end'>
+      {isShowCart && <div onClick={() => dispatch(showCart())} className='cart absolute inset-0 bg-overlay z-60 flex justify-end'>
         <Cart />
       </div>
       }
@@ -54,6 +54,11 @@ function App() {
           <Route path={path.MANAGE_ORDER} element={<ManageOrder />} />
           <Route path={path.CREATE_PRODUCT} element={<CreateProduct />} />
           <Route path={path.UPDATE_PRODUCT} element={<UpdateProduct />} />
+          <Route path={path.CREATE_BRAND} element={<CreateBrand />} />
+          <Route path={path.MANAGE_BRAND} element={<ManageBrand />} />
+          <Route path={path.UPDATE_BRAND} element={<UpdateBrand />} />
+          <Route path={path.CREATE_PRODUCT_CATEGORY} element={<CreateProductCategory />} />
+          <Route path={path.MANAGE_PRODUCT_CATEGORY} element={<ManageProductCategory />} />
         </Route>
 
 

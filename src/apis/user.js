@@ -52,6 +52,12 @@ export const apiDeleteUser = (uid) => axios({
     method: 'DELETE',
 })
 
+export const apiUpdateCurrent = (data) => axios({
+    url: '/user/current/',
+    method: 'PUT',
+    data
+})
+
 export const apiUpdateCart = (data) => axios({
     url: '/user/cart/',
     method: 'PUT',
@@ -61,4 +67,9 @@ export const apiUpdateCart = (data) => axios({
 export const apiRemoveCart = (pid, color) => axios({
     url: `/user/remove-cart/${pid}/${color}`,
     method: 'DELETE',
+})
+
+export const apiUpdateWishlist = (pid) => axios({
+    url: '/user/wishlist/' + pid,
+    method: 'PUT',
 })

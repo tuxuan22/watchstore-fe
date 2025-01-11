@@ -1,21 +1,31 @@
 import React, { memo, useEffect, useState } from 'react'
 import { createSearchParams, useParams, useSearchParams } from 'react-router-dom'
 import useDebounce from 'hooks/useDebounce'
-import { apiGetProducts } from 'apis'
+import { apiGetBrands, apiGetProducts } from 'apis'
 import Slider from 'rc-slider'
 import 'rc-slider/assets/index.css' // Import rc-slider styles
-import icons from 'utils/icons'
-import { brands } from 'utils/constans'
 import withBaseComponent from 'hocs/withBaseComponent'
 
-const { MdOutlineKeyboardArrowDown } = icons
 
 const SearchItem = ({ name, activeClick, changeActiveFilter, type = 'checkbox', navigate }) => {
     const { category } = useParams()
     const [params] = useSearchParams()
+    const [brands, setBrands] = useState([])
+
     const [selected, setSelected] = useState([])
     const [price, setPrice] = useState([0, 200000000])
     const [bestPrice, setBestPrice] = useState(null)
+
+    const fetchBrands = async () => {
+        const response = await apiGetBrands()
+        if (response.success) {
+            setBrands(response.brands)
+        }
+    }
+
+    useEffect(() => {
+        fetchBrands()
+    }, [])
 
     const handleSelect = (e) => {
         const alreadyEl = selected.find(el => el === e.target.value)
@@ -28,6 +38,12 @@ const SearchItem = ({ name, activeClick, changeActiveFilter, type = 'checkbox', 
         const response = await apiGetProducts({ sort: '-price', limit: 1 })
         if (response.success) setBestPrice(response.products[0]?.price)
     }
+
+    useEffect(() => {
+        if (bestPrice !== null) {
+            setPrice([0, bestPrice])
+        }
+    }, [bestPrice])
 
     useEffect(() => {
         let param = []
@@ -70,85 +86,43 @@ const SearchItem = ({ name, activeClick, changeActiveFilter, type = 'checkbox', 
     }, [debouncePrice])
 
     return (
-        <div
-            className='p-2 cursor-pointer text-xs gap-4 bg-white relative border flex justify-center items-center'
-            onClick={() => changeActiveFilter(name)}
-        >
-            <span>{name}</span>
-            <MdOutlineKeyboardArrowDown />
-            {activeClick === name && (
-                <div className='absolute top-[calc(100%+1px)] left-0 z-50 w-fit p-4 border bg-white min-w-[150px]'>
-                    {type === 'checkbox' && (
-                        <div onClick={e => e.stopPropagation()} className=''>
-                            <div className='border-b p-2 flex items-center justify-between '>
-                                <span className='whitespace-nowrap'>{`${selected.length}`}</span>
-                                <span
-                                    onClick={e => {
-                                        e.stopPropagation()
-                                        setSelected([])
-                                        changeActiveFilter(null)
-
-                                    }}
-                                    className='underline hover:text-main cursor-pointer'
-                                >
-                                    Đặt lại
-                                </span>
-                            </div>
-                            <div onClick={e => e.stopPropagation()} className='mt-2 flex flex-col gap-2'>
-                                {brands.map((el, index) => (
-                                    <div key={index} className='flex items-center gap-2'>
-                                        <input
-                                            type="checkbox"
-                                            name={el}
-                                            value={el}
-                                            onClick={handleSelect}
-                                            id={el}
-                                            checked={selected.some(selectedItem => selectedItem === el)}
-                                        />
-                                        <label htmlFor={el}>{el}</label>
-                                    </div>
-                                ))}
-                            </div>
+        <div className='flex flex-col gap-2'>
+            <span className='text-md'>{name}</span>
+            {type === 'checkbox' && (
+                <div className='mt-2 flex flex-col gap-2 max-h-[160px] overflow-y-scroll'>
+                    {brands.map((el) => (
+                        <div key={el._id} className='flex items-center gap-2'>
+                            <input
+                                type="checkbox"
+                                name={el.title}
+                                value={el.title}
+                                onClick={handleSelect}
+                                id={el._id}
+                                checked={selected.some(selectedItem => selectedItem === el.title)}
+                            />
+                            <label htmlFor={el.title}>{el.title}</label>
                         </div>
-                    )}
-                    {type === 'input' && (
-                        <div className='w-[300px]' onClick={e => e.stopPropagation()}>
-                            <div className='border-b p-2 flex items-center justify-between'>
-                                <span className='whitespace-nowrap'>
-                                    {`Giá: ${Number(price[0]).toLocaleString()} đ - ${Number(price[1]).toLocaleString()} đ`}
-                                </span>
-                                <span
-                                    onClick={e => {
-                                        e.stopPropagation()
-                                        setPrice([0, bestPrice])
-                                        changeActiveFilter(null)
-                                    }}
-                                    className='underline hover:text-main cursor-pointer'
-                                >
-                                    Đặt lại
-                                </span>
-                            </div>
-                            <div className='flex justify-center'>
-                                <div className='p-2 w-[270px] '>
-                                    <Slider
-                                        range
-                                        min={0}
-                                        max={bestPrice || 200000000}
-                                        step={1000000}
-                                        value={price}
-                                        onChange={setPrice}
-                                        marks={{
-                                            0: '0đ',
-                                            [bestPrice || 200000000]: `${(bestPrice || 200000000).toLocaleString()}đ`,
-                                        }}
-                                        className="mt-4 "
-                                    />
-
-                                </div>
-                            </div>
-                        </div>
-                    )}
+                    ))}
                 </div>
+            )}
+            {type === 'input' && (
+
+                <div>
+                    <div className='flex justify-between'>
+                        <span className='text-xs'>{`${price[0].toLocaleString()}đ`}</span>
+                        <span className='text-xs'>{`${price[1].toLocaleString()}đ`}</span>
+                    </div>
+
+                    <Slider
+                        range
+                        min={0}
+                        max={bestPrice || 200000000}
+                        step={1000000}
+                        value={price}
+                        onChange={setPrice}
+                    />
+                </div>
+
             )}
         </div>
     )

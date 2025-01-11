@@ -23,9 +23,11 @@ export const userSlice = createSlice({
             state.token = null
             state.isLoading = false
             state.mes = ''
+            state.currentCart = []
         },
         clearMessage: (state) => {
             state.mes = ''
+            state.currentCart = []
         },
         updateCart: (state, action) => {
             const { pid, color, quantity } = action.payload

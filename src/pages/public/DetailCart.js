@@ -2,26 +2,58 @@ import { BreadCrumb, Button, OrderItem } from 'components'
 import withBaseComponent from 'hocs/withBaseComponent'
 import React, { memo, useState } from 'react'
 import { useSelector } from 'react-redux'
-import { Navigate } from 'react-router-dom'
+import { createSearchParams, Link, Navigate } from 'react-router-dom'
+import Swal from 'sweetalert2'
 import { formatMoney } from 'utils/helpers'
 import path from 'utils/path'
 
 
-const DetailCart = ({ navigate }) => {
+const DetailCart = ({ navigate, location }) => {
     const { isLoggedIn, current, currentCart } = useSelector(state => state.user)
 
     const [category, setCategory] = useState(null)
     if (!isLoggedIn || !current) return <Navigate to={`/${path.LOGIN}`} replace={true}></Navigate>
 
+    const handleSubmit = () => {
+        if (!current?.address) return Swal.fire({
+            icon: 'error',
+            title: 'Vui lòng cập nhật địa chỉ giao hàng',
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Cập nhật',
+            showCancelButton: true,
+            cancelButtonText: 'Quay lại',
+
+        }).then((rs) => {
+            if (rs.isConfirmed) navigate({
+                pathname: `/${path.MEMBER}/${path.PERSONAL}`,
+                search: createSearchParams({ redirect: location.pathname }).toString()
+            })
+        })
+        else navigate(`/${path.CHECKOUT}`)
+
+    }
+
     return (
-        <div>
+        <div className='bg-bgc overflow-y-auto'>
             <div className='w-main p-4'>
                 <BreadCrumb category={category} />
 
             </div>
-            {currentCart.length === 0 && <div className='w-main flex justify-center my-6'>
-                Không có gì trong giỏ hàng
-            </div>}
+            {currentCart.length === 0 &&
+                <div className=' flex flex-col items-center justify-center p-8'>
+                    <span className='text-gray-500 text-lg'>
+                        Không có gì trong giỏ hàng
+                    </span>
+
+                    <Link
+                        to={`/${path.HOME}`}
+                        className='text-gray-400 text-sm mt-2'
+                    >
+                        Hãy thêm sản phẩm vào giỏ hàng
+                    </Link>
+                </div>
+            }
             {currentCart.length > 0 && <div>
                 <div className='w-main mx-auto mt-6 border p-2 font-semibold grid grid-cols-12'>
                     <span className='col-span-5 text-left w-full'>Thông tin sản phẩm</span>
@@ -47,9 +79,8 @@ const DetailCart = ({ navigate }) => {
                         <span>Tổng tiền</span>
                         <span className='text-red-500'>{`${formatMoney(currentCart?.reduce((sum, el) => +el?.price * el.quantity + sum, 0))}`}</span>
                     </span>
-                    <Button handleOnClick={() => {
-                        navigate(`/${path.CHECKOUT}`)
-                    }} name='Thanh toán' />
+                    <Button handleOnClick={handleSubmit} name='Thanh toán' />
+
                 </div>
             </div>}
         </div>

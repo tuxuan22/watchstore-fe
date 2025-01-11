@@ -3,7 +3,7 @@ import {
     PayPalButtons,
     usePayPalScriptReducer
 } from "@paypal/react-paypal-js"
-import { apiCreateOrder } from "apis"
+import { apiCreateOrder, apiUpdateStatusOrderUser } from "apis"
 import { useEffect } from "react"
 import { useNavigate } from "react-router-dom"
 import Swal from "sweetalert2"
@@ -26,14 +26,19 @@ const ButtonWrapper = ({ currency, showSpinner, amount, payload, setIsSuccess })
     }, [currency, showSpinner])
 
     const handleSaveOrder = async () => {
-        const response = await apiCreateOrder({ ...payload, status: 'Succeed' })
+        const response = await apiCreateOrder({ ...payload })
         if (response.success) {
+
+            // update danh sach san pham khi status Succeed
+
+
             setIsSuccess(true)
-            setTimeout(() => {
-                Swal.fire('Chúc mừng', 'Đã thanh toán thành công!', 'success',).then(() => {
+            Swal.fire('Chúc mừng', 'Đã thanh toán thành công!', 'success',)
+                .then(() => {
                     navigate('/')
                 })
-            }, 500)
+            await apiUpdateStatusOrderUser(response.rs._id, { status: 'Succeed', })
+
         }
     }
 

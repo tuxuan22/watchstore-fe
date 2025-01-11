@@ -41,6 +41,12 @@ export const validate = (payload, setInvalidFields) => {
                     setInvalidFields(prev => [...prev, { name: i[0], mes: 'Mật khẩu phải có ít nhất 6 ký tự' }])
                 }
                 break
+            case 'confirmPassword':
+                if (i[1] !== payload.password) {
+                    invalids++
+                    setInvalidFields(prev => [...prev, { name: i[0], mes: 'Mật khẩu không khớp' }])
+                }
+                break
             case 'mobile':
                 const regexMobile = /^0[0-9]{9,10}$/
                 if (!i[1].match(regexMobile)) {

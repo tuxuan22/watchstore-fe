@@ -3,7 +3,7 @@ import { Button, InputField, Loading } from 'components'
 import { Link } from 'react-router-dom'
 import path from 'utils/path'
 import icons from 'utils/icons'
-import { apiRegister, apiEmailVerify } from 'apis/user'
+import { apiRegister, apiEmailVerify } from 'apis'
 import { showModal } from 'store/app/appSlice'
 import Swal from 'sweetalert2'
 import { validate } from 'utils/helpers'
@@ -15,6 +15,7 @@ const Register = ({ dispatch, navigate }) => {
     const [payload, setPayload] = useState({
         email: '',
         password: '',
+        confirmPassword: '',
         firstname: '',
         lastname: '',
         mobile: ''
@@ -26,13 +27,17 @@ const Register = ({ dispatch, navigate }) => {
         const invalids = validate(payload, setInvalidFields)
 
         if (invalids === 0) {
+            const { confirmPassword, ...payloadData } = payload
             dispatch(showModal({ isShowModal: true, modalChildren: <Loading /> }))
-            const response = await apiRegister(payload)
+            const response = await apiRegister(payloadData)
             dispatch(showModal({ isShowModal: false, modalChildren: null }))
             if (response.success) {
                 setIsVerifiedEmail(true)
             } else {
-                Swal.fire('Lỗi!', response.mes, 'error')
+                setInvalidFields((prev) => [
+                    ...prev,
+                    { name: 'auth', mes: response.mes },
+                ])
             }
         }
     }, [payload, dispatch])
@@ -116,18 +121,31 @@ const Register = ({ dispatch, navigate }) => {
                     invalidFields={invalidFields}
                     setInvalidFields={setInvalidFields}
                 />
-
+                <InputField
+                    type='password'
+                    placeholder='Xác nhận mật khẩu'
+                    value={payload.confirmPassword}
+                    setValue={setPayload}
+                    nameKey='confirmPassword'
+                    invalidFields={invalidFields}
+                    setInvalidFields={setInvalidFields}
+                />
                 <Button
                     name='Đăng ký'
                     handleOnClick={handleSubmit}
                     fw
                 />
+                {invalidFields?.some(el => el.name === 'auth') && (
+                    <small className='text-red-600 italic w-full text-left'>
+                        {invalidFields.find(el => el.name === 'auth')?.mes}
+                    </small>
+                )}
                 <div className='flex items-center justify-between my-2 w-full text-sm'>
                     <Link className='hover:text-main cursor-pointer' to={`/${path.LOGIN}`}>Đăng nhập ngay</Link>
                 </div>
 
 
-                <span className='text-sm flex text-center'>Hoặc đăng nhập bằng</span>
+                {/* <span className='text-sm flex text-center'>Hoặc đăng nhập bằng</span>
                 <div>
                     <Button
                         name='Facebook'
@@ -140,7 +158,7 @@ const Register = ({ dispatch, navigate }) => {
                         iconBefore={<FaGoogle className='mr-3' />}
 
                     />
-                </div>
+                </div> */}
             </div>
         </div>
     )

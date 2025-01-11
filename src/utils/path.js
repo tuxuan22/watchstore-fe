@@ -25,12 +25,18 @@ const path = {
     MANAGE_ORDER: 'don-hang',
     CREATE_PRODUCT: 'tao-san-pham',
     UPDATE_PRODUCT: 'sua-san-pham',
+    CREATE_BRAND: 'tao-thuong-hieu',
+    MANAGE_BRAND: 'thuong-hieu',
+    UPDATE_BRAND: 'sua-thuong-hieu',
+    CREATE_PRODUCT_CATEGORY: 'tao-danh-muc-san-pham',
+    MANAGE_PRODUCT_CATEGORY: 'danh-muc-san-pham',
 
 
     //Member
     MEMBER: 'account',
     PERSONAL: 'tai-khoan',
     MY_ORDER: 'don-hang',
+    HISTORY: 'history',
     WISHLIST: 'wishlist'
 
 }

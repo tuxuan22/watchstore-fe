@@ -1,9 +1,15 @@
 export { default as AdminLayout } from './AdminLayout'
 export { default as Dashboard } from './Dashboard'
-export { default as ManageProduct } from './ManageProduct'
-export { default as CreateProduct } from './CreateProduct'
 export { default as ManageUser } from './ManageUser'
 export { default as ManageOrder } from './ManageOrder'
 export { default as UpdateProduct } from './UpdateProduct'
+export { default as UpdateBrand } from './UpdateBrand'
+export { default as UpdateProductCategory } from './UpdateProductCategory'
+export { default as ManageProduct } from './ManageProduct'
+export { default as CreateProduct } from './CreateProduct'
+export { default as ManageBrand } from './ManageBrand'
+export { default as CreateBrand } from './CreateBrand'
+export { default as ManageProductCategory } from './ManageProductCategory'
+export { default as CreateProductCategory } from './CreateProductCategory'
 
 

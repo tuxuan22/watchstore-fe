@@ -10,6 +10,31 @@ const settings = {
     infinite: false,
     slidesToShow: 5,
     slidesToScroll: 1,
+    responsive: [
+        {
+            breakpoint: 1024,
+            settings: {
+                slidesToShow: 4,
+                // slidesToScroll: 1,
+            }
+        },
+        {
+            breakpoint: 768,
+            settings: {
+                slidesToShow: 2,
+                // slidesToScroll: 1,
+            }
+        },
+        {
+            breakpoint: 640,
+            settings: {
+                slidesToShow: 2,
+                // slidesToScroll: 1,
+
+            }
+        }
+    ]
+
 }
 
 const CustomSlider = ({ products, activedTab, normal }) => {
@@ -17,12 +42,12 @@ const CustomSlider = ({ products, activedTab, normal }) => {
 
     return (
 
-        <div>
+        <div >
             {products && <Slider className='custom-slider' {...settings}>
                 {products?.map((el, index) => (
                     <Product
                         key={index}
-                        pid={el.id}
+                        pid={el._id}
                         productData={el}
                         isNew={activedTab === 1 ? false : true || ''}
                         normal={normal}

@@ -5,13 +5,15 @@ import { Link, NavLink } from 'react-router-dom'
 import clsx from 'clsx'
 import icons from 'utils/icons'
 import path from 'utils/path'
+import withBaseComponent from 'hocs/withBaseComponent'
+import { logout } from 'store/user/userSlice'
 
 const activedStyle = 'px-4 py-2 flex items-center gap-2 bg-main text-white'
 const notActivedStyle = 'px-4 py-2 flex items-center gap-2 hover:bg-[#ff4e50] hover:text-white'
 
-const { MdOutlineKeyboardArrowRight, MdOutlineKeyboardArrowDown } = icons
+const { MdOutlineKeyboardArrowRight, MdOutlineKeyboardArrowDown, IoMdLogOut } = icons
 
-const AdminSidebar = () => {
+const AdminSidebar = ({ dispatch }) => {
     const [actived, setActived] = useState([])
     const handleShowTabs = (tabId) => {
         if (actived.some(el => el === tabId)) setActived(prev => prev.filter(el => el !== tabId))
@@ -55,11 +57,21 @@ const AdminSidebar = () => {
                                 ))}
                             </div>}
                         </div>}
+
                     </Fragment>
                 ))}
+                <NavLink
+                    to={`/${path.HOME}`}
+                    className='px-4 py-2 flex items-center gap-2 hover:bg-[#ff4e50] hover:text-white'
+                    onClick={() => dispatch(logout())}
+                >
+                    <span><IoMdLogOut /></span>
+                    <span>Đăng xuất</span>
+                </NavLink>
             </div>
+
         </div>
     )
 }
 
-export default memo(AdminSidebar)
+export default withBaseComponent(memo(AdminSidebar))
