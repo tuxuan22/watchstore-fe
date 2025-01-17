@@ -1,11 +1,16 @@
 import React, { memo, useEffect, useState } from 'react'
 import { productInfoTabs, tutorial } from 'utils/constans'
 import DOMPurify from 'dompurify'
-import { RatingLevel, Comment } from 'components'
+import { RatingLevel, Comment, Button } from 'components'
 import { renderStar } from 'utils/helpers'
 
 const ProductInfo = ({ product }) => {
     const [activedTab, setActivedTab] = useState(1)
+    const [showAllComments, setShowAllComments] = useState(false)
+    const displayComments = showAllComments
+        ? product?.ratings
+        : product?.ratings.slice(0, 3)
+
     return (
         <div>
             <div className='flex items-center px-2.5 relative '>
@@ -19,7 +24,7 @@ const ProductInfo = ({ product }) => {
                     </span>
                 ))}
             </div>
-            <div className='px-2.5 py-4 w-[620px]'>
+            <div className='bg-white ml-2.5 px-2.5 py-4 w-[600px]'>
                 {activedTab === 1 && (
                     <div >
                         <ul className='list-square text-sm text-gray-500'>
@@ -68,8 +73,8 @@ const ProductInfo = ({ product }) => {
                             </div>
                         </div>
 
-                        <div>
-                            {product.ratings.map(el => (
+                        <div className=''>
+                            {displayComments.map(el => (
                                 <Comment
                                     key={el._id}
                                     star={el.star}
@@ -78,6 +83,17 @@ const ProductInfo = ({ product }) => {
                                     name={`${el.postedBy?.firstname} ${el.postedBy?.lastname}`}
                                 />
                             ))}
+
+                            {product.ratings.length > 3 && (
+                                <div className='flex justify-center mt-4'>
+                                    <Button
+                                        name={showAllComments ? 'Thu gọn' : 'Xem thêm đánh giá'}
+                                        handleOnClick={() => setShowAllComments(prev => !prev)}
+                                    >
+
+                                    </Button>
+                                </div>
+                            )}
                         </div>
                     </div>
                 )}

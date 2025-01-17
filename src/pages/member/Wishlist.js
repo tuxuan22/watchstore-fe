@@ -10,20 +10,20 @@ const Wishlist = () => {
                 Sản phẩm yêu thích
             </header>
             {current?.wishlist?.length > 0 ? (
-                <div className='py-4 w-full grid grid-cols-4'>
+                // <div className='py-4 w-full grid grid-cols-4'>
 
-                    <div className='py-4 w-full grid grid-cols-4'>
-                        {current?.wishlist?.map((el) => (
-                            <div key={el._id}>
-                                <Product
-                                    pid={el._id}
-                                    productData={el}
-                                    normal={true}
-                                />
-                            </div>
-                        ))}
-                    </div>
+                <div className='py-4 w-full grid grid-cols-4'>
+                    {current?.wishlist?.map((el) => (
+                        <div key={el._id}>
+                            <Product
+                                pid={el._id}
+                                productData={el}
+                                normal={true}
+                            />
+                        </div>
+                    ))}
                 </div>
+                // </div>
             ) : (
                 <div className='flex items-center justify-center py-8'>
                     <p className='text-gray-500'>Bạn chưa có sản phẩm yêu thích nào</p>

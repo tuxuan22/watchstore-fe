@@ -1,81 +1,165 @@
 import React, { useEffect, useState } from 'react'
 import icons from 'utils/icons'
-import { LineChart, Line, CartesianGrid, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts'
-import { formatMoney } from 'utils/helpers'
-import { apiGetOrders } from 'apis'
-import moment from 'moment'
+import { XAxis, YAxis, Tooltip, ResponsiveContainer, Bar, BarChart } from 'recharts'
+import { formatDate, formatMoney } from 'utils/helpers'
+import { apiGetOrders, apiGetProducts, apiGetUsers } from 'apis'
 
 const { RiShoppingBag3Line, FaUsers, MdOutlineInventory2, BsCurrencyDollar } = icons
 
 const Dashboard = () => {
     const [stats, setStats] = useState({
         orders: 0,
+        successOrders: 0,
         revenue: 0,
-        users: 9,
-        products: 17
+        users: 0,
+        products: 0
     })
     const [recentOrders, setRecentOrders] = useState(null)
-    const [salesData, setSalesData] = useState([]);
+    const [salesData, setSalesData] = useState([])
+    const [timeFilter, setTimeFilter] = useState('week')
+    const [selectedYear, setSelectedYear] = useState(new Date().getFullYear())
 
-    useEffect(() => {
-        fetchSalesData();
-    }, []);
-
-    const fetchSalesData = async () => {
-        const response = await apiGetOrders({ sort: '-createdAt' });
-        if (response.success) {
-            // Chuẩn hóa dữ liệu cho biểu đồ
-            const data = response.orders.reduce((acc, order) => {
-                const date = moment(order.createdAt).format('DD/MM');
-                const existing = acc.find((item) => item.date === date);
-                if (existing) {
-                    existing.revenue += order.total * 25395.02;
-                } else {
-                    acc.push({ date, revenue: order.total * 25395.02 });
-                }
-                return acc
-            }, []);
-            setSalesData(data)
-        }
+    const getWeekOfMonth = (date) => {
+        const startOfMonth = new Date(date.getFullYear(), date.getMonth(), 1)
+        const diffDays = Math.ceil((date - startOfMonth) / (24 * 60 * 60 * 1000))
+        return Math.ceil(diffDays / 7)
     }
-    console.log(recentOrders)
 
     useEffect(() => {
         fetchDashboardData()
+        fetchSalesData()
+        fetchRecent()
     }, [])
-
     const fetchDashboardData = async () => {
-        const response = await apiGetOrders({ sort: '-createdAt', limit: 3 })
-        if (response.success) {
-            setRecentOrders(response)
-            const totalRevenue = response.orders.reduce((acc, order) => {
+        const [orderResponse, userResponse, productResponse] = await Promise.all([
+            apiGetOrders(),
+            apiGetUsers(),
+            apiGetProducts()
+        ])
+
+        if (orderResponse.success) {
+            const totalRevenue = orderResponse.orders.reduce((acc, order) => {
                 if (order.status === 'Succeed') {
-                    return acc + order.products.reduce((subAcc, product) => {
-                        return subAcc + product.price
-                    }, 0)
+                    return acc + order.products.reduce((sum, el) =>
+                        sum + (el.product.finalPrice * el.quantity), 0)
                 }
                 return acc
             }, 0)
+
+            const successOrders = orderResponse.orders.filter(order => order.status === 'Succeed').length
+
             setStats((prev) => ({
                 ...prev,
-                orders: response.counts,
+                orders: orderResponse.counts,
+                successOrders: successOrders,
                 revenue: totalRevenue,
+                users: userResponse.counts || 0,
+                products: productResponse.counts || 0
             }))
         }
 
     }
 
+    const fetchSalesData = async () => {
+        const response = await apiGetOrders({ sort: 'createdAt' })
+
+        if (response.success) {
+            let template = []
+            if (timeFilter === 'week') {
+
+                for (let i = 1; i <= 52; i++) {
+                    template.push({ date: `Tuần ${i}`, revenue: 0 })
+                }
+            } else if (timeFilter === 'month') {
+
+                for (let i = 1; i <= 12; i++) {
+                    template.push({ date: `Tháng ${i}`, revenue: 0 })
+                }
+            } else if (timeFilter === 'quarter') {
+                for (let i = 1; i <= 4; i++) {
+                    template.push({ date: `Quý ${i}`, revenue: 0 })
+                }
+            }
+            const filteredDate = response.orders.reduce((acc, order) => {
+                const orderDate = new Date(order.createdAt)
+                if (orderDate.getFullYear() === selectedYear) {
+                    const orderTotal = order.products.reduce((sum, item) => {
+                        if (order.status === 'Succeed') {
+                            return sum + (item.product.finalPrice * item.quantity)
+                        }
+                        return sum
+                    }, 0)
+                    if (timeFilter === 'week') {
+                        if (orderDate.getFullYear() === selectedYear) {
+                            const week = getWeekOfMonth(orderDate)
+                            const key = `Tuần ${week}`
+                            const existing = acc.find((item) => item.date === key)
+                            if (existing) {
+                                existing.revenue += orderTotal
+                            } else {
+                                acc.push({ date: key, revenue: orderTotal })
+                            }
+                        }
+                    } else if (timeFilter === 'month') {
+                        const month = orderDate.getMonth() + 1
+                        const key = `Tháng ${month}`
+                        const existing = acc.find((item) => item.date === key)
+                        if (existing) {
+                            existing.revenue += orderTotal
+                        } else {
+                            acc.push({ date: key, revenue: orderTotal })
+                        }
+                    }
+                    else if (timeFilter === 'quarter') {
+                        const quarter = Math.ceil((orderDate.getMonth() + 1) / 3)
+                        const key = `Quý ${quarter}`
+                        const existing = acc.find((item) => item.date === key)
+                        if (existing) {
+                            existing.revenue += orderTotal
+                        } else {
+                            acc.push({ date: key, revenue: orderTotal })
+                        }
+                    }
+
+                }
+                return acc
+            }, [])
+
+            const mergedData = template.map(item => {
+                const match = filteredDate.find(d => d.date === item.date)
+                return match || item
+            })
+            setSalesData(mergedData)
+        }
+    }
+
+    const fetchRecent = async () => {
+        const response = await apiGetOrders({ sort: '-createdAt', limit: 5 })
+        if (response.success) {
+            setRecentOrders(response)
+        }
+    }
+
+
     return (
         <div className='p-4 w-full'>
-            {/* Stats Overview */}
-            <div className='grid grid-cols-4 gap-4 mb-6'>
+            <div className='grid grid-cols-5 gap-4 mb-6'>
                 <div className='bg-white p-4 rounded-lg shadow'>
                     <div className='flex items-center justify-between'>
                         <div>
                             <p className='text-gray-500'>Tổng đơn hàng</p>
                             <h3 className='text-2xl font-bold'>{stats.orders}</h3>
                         </div>
-                        <RiShoppingBag3Line size={40} className='text-main' />
+                        <RiShoppingBag3Line size={40} className='text-blue-600' />
+                    </div>
+                </div>
+                <div className='bg-white p-4 rounded-lg shadow'>
+                    <div className='flex items-center justify-between'>
+                        <div>
+                            <p className='text-gray-500'>Tổng đơn hàng thành công</p>
+                            <h3 className='text-2xl font-bold'>{stats.successOrders}</h3>
+                        </div>
+                        <RiShoppingBag3Line size={40} className='text-green-600' />
                     </div>
                 </div>
                 <div className='bg-white p-4 rounded-lg shadow'>
@@ -107,30 +191,68 @@ const Dashboard = () => {
                 </div>
             </div>
 
-            {/* Sales Chart */}
-            <div className='grid grid-cols-3 gap-4 mb-6'>
-                <div className='col-span-2 bg-white p-4 rounded-lg shadow'>
-                    <h2 className='text-xl font-bold mb-4'>Biểu đồ doanh thu</h2>
-                    <div className='flex  justify-center'>
-                        <ResponsiveContainer width="90%" height={300}
-                        >
-                            <LineChart data={salesData}>
-                                <CartesianGrid stroke="#ccc" strokeDasharray="3 3" />
-                                <XAxis dataKey="date" />
-                                <YAxis />
-                                <Tooltip formatter={(value) => `${value.toLocaleString()}đ`} />
-                                <Line type="monotone" dataKey="revenue" name='Doanh thu' stroke="#8884d8" />
-                            </LineChart>
-                        </ResponsiveContainer>
-                    </div>
+            <div className="flex justify-end gap-4 mb-4">
+                <div>
+                    <label className="mr-2">Chọn năm:</label>
+                    <select
+                        className="border px-3 py-2 rounded ouline-none"
+                        value={selectedYear}
+                        onChange={(e) => setSelectedYear(Number(e.target.value))}
+                    >
+                        {[2023, 2024, 2025].map((year) => (
+                            <option key={year} value={year}>
+                                {year}
+                            </option>
+                        ))}
+                    </select>
                 </div>
-                <div className='bg-white p-4 rounded-lg shadow'>
-                    <h2 className='text-xl font-bold mb-4'>Top sản phẩm bán chạy</h2>
-                    {/* Add top products list */}
+                <div>
+                    <label className="mr-2">Thống kê:</label>
+                    <select
+                        className="border px-3 py-2 rounded outline-none"
+                        value={timeFilter}
+                        onChange={(e) => setTimeFilter(e.target.value)}
+                    >
+                        <option value="week">Tuần</option>
+                        <option value="month">Tháng</option>
+                        <option value="quarter">Quý</option>
+                    </select>
+                </div>
+            </div>
+            <div className=' bg-white p-4 rounded-lg shadow'>
+                <h2 className='text-xl font-bold mb-4'>Biểu đồ doanh thu</h2>
+                <div className='flex  justify-center'>
+                    <ResponsiveContainer width='100%' height={500}
+                    >
+                        <BarChart
+
+                            margin={{
+                                top: 5,
+                                right: 30,
+                                left: 20,
+                                bottom: 5,
+                            }}
+                            barSize={20}
+                            data={salesData}>
+                            <XAxis
+                                dataKey="date"
+                                padding={{ left: 10, right: 10 }}
+
+                            />
+                            <YAxis />
+                            {/* <Legend/> */}
+                            <Tooltip formatter={(value) => `${value.toLocaleString()}đ`} />
+                            <Bar
+                                dataKey="revenue"
+                                name='Doanh thu'
+                                fill="#8884d8"
+                                background={{ fill: '#eee' }}
+                            />
+                        </BarChart>
+                    </ResponsiveContainer>
                 </div>
             </div>
 
-            {/* Recent Orders */}
             <div className='bg-white p-4 rounded-lg shadow'>
                 <h2 className='text-xl font-bold mb-4'>Đơn hàng gần đây</h2>
                 <table className='w-full text-left'>
@@ -148,11 +270,11 @@ const Dashboard = () => {
                             <tr
                                 key={order._id}
                                 className='border-b'>
-                                <td className='px-4 py-2'>
-                                    {order._id}
+                                <td className='px-4 py-2 uppercase'>
+                                    {order._id.slice(-5)}
                                 </td>
                                 <td className='px-4 py-2'>
-                                    {order.orderBy}
+                                    {order.orderBy.firstname} {order.orderBy.lastname}
                                 </td>
                                 <td className='px-4 py-2'>
                                     {formatMoney(order.total * 25395.02)}
@@ -165,7 +287,7 @@ const Dashboard = () => {
                                         {order.status === 'Succeed' ? 'Thành công' : order.status === 'Processing' ? 'Đang xử lý' : 'Đã hủy'}
                                     </span>
                                 </td>
-                                <td className='px-4 py-2'>{moment(order.createdAt).format('DD/MM/YYYY')}</td>
+                                <td className='px-4 py-2'>{formatDate(order.createdAt).format('DD/MM/YYYY')}</td>
                             </tr>
                         ))}
                     </tbody>

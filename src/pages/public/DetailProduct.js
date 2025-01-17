@@ -1,7 +1,7 @@
 import React, { memo, useCallback, useEffect, useRef, useState } from 'react'
 import { createSearchParams, useParams } from 'react-router-dom'
-import { apiGetProduct, apiGetProducts, apiUpdateCart } from 'apis'
-import { BreadCrumb, Button, CustomSlider, ProductInfo, SelectQuantity } from 'components'
+import { apiGetProduct, apiGetProducts, apiUpdateCart, apiUpdateWishlist } from 'apis'
+import { BreadCrumb, Button, CustomSlider, ProductInfo, SelectOption, SelectQuantity } from 'components'
 import { renderStar, formatMoney, formatPrice } from 'utils/helpers'
 import 'slick-carousel/slick/slick.css'
 import 'slick-carousel/slick/slick-theme.css'
@@ -13,7 +13,9 @@ import withBaseComponent from 'hocs/withBaseComponent'
 import path from 'utils/path'
 import { toast } from 'react-toastify'
 import { getCurrent } from 'store/user/asyncActions'
+import icons from 'utils/icons'
 
+const { CiHeart, FaHeart } = icons
 
 const DetailProduct = ({ isQuickView, data, dispatch, navigate, location }) => {
     const settings = {
@@ -169,6 +171,35 @@ const DetailProduct = ({ isQuickView, data, dispatch, navigate, location }) => {
             })
         })
 
+        if (product?.quantity === 0) {
+            toast.warning('Sản phẩm đã hết hàng')
+            return
+        }
+
+        if (quantity > product?.quantity) {
+            toast.warning(`Chỉ còn ${product?.quantity} sản phẩm`)
+            setQuantity(product?.quantity)
+            return
+        }
+
+        const currentProductInCart = current?.cart?.find(el =>
+            el.product._id === pid
+        )
+        const currentCartQuantity = currentProductInCart?.quantity || 0
+
+        const availableQuantity = product?.quantity - currentCartQuantity
+
+        if (availableQuantity === 0) {
+            toast.warning('Đã đạt số lượng tối đa trong giỏ hàng')
+            return
+        }
+
+        if (quantity > availableQuantity) {
+            toast.warning(`Chỉ có thể thêm ${availableQuantity} sản phẩm vào giỏ hàng`)
+            setQuantity(availableQuantity)
+            return
+        }
+
         const response = await apiUpdateCart({
             pid,
             color: selectedProduct?.color || product?.color,
@@ -183,6 +214,20 @@ const DetailProduct = ({ isQuickView, data, dispatch, navigate, location }) => {
             dispatch(getCurrent())
         }
         else toast.error(response.mes)
+
+    }
+
+    const handleWishlist = async (e) => {
+        // e.stopPropagation()
+        const response = await apiUpdateWishlist(pid)
+        if (response.success) {
+            dispatch(getCurrent())
+            toast.success(response.mes)
+        } else
+            navigate({
+                pathname: `/${path.LOGIN}`,
+                search: createSearchParams({ redirect: location.pathname }).toString()
+            })
     }
 
     return (
@@ -229,7 +274,22 @@ const DetailProduct = ({ isQuickView, data, dispatch, navigate, location }) => {
                     <div className='flex mb-1 items-center'>
                         {renderStar(product?.totalRatings)?.map(el => (<span key={el}>{el}</span>))}
                     </div>
-                    <span className='text-red-600 text-2xl mb-2'>{`${formatMoney(formatPrice(selectedProduct?.price || product?.price))}`}</span>
+                    {/* <span className='text-red-600 text-2xl mb-2'>{`${formatMoney(formatPrice(selectedProduct?.price || product?.price))}`}</span> */}
+                    {product?.discount > 0 ? (
+                        <div className='flex items-center gap-1'>
+
+                            <span className='line-through text-lg text-gray-400'>
+                                {formatMoney(product?.price || 0)}
+                            </span>
+                            <span className='text-main text-2xl font-medium'>
+                                {formatMoney((product?.price || 0) * (1 - product?.discount / 100))}
+                            </span>
+
+                        </div>
+                    ) : (
+                        <div className='text-main text-2xl'>{formatMoney(product?.price || 0)} </div>
+
+                    )}
                     <div className='flex my-4 gap-2 items-center'>
                         <span className='font-semibold'>Màu </span>
                         <div className='flex flex-wrap gap-2 items-center w-full'>
@@ -246,33 +306,51 @@ const DetailProduct = ({ isQuickView, data, dispatch, navigate, location }) => {
                         </div>
                     </div>
 
-                    {product?.quantity > 0 ? (
-                        <div className='flex gap-2'>
-                            <SelectQuantity
-                                quantity={quantity}
-                                handleQuantity={handleQuantity}
-                                handleChangeQuantity={handleChangeQuantity}
-                            />
-                            <Button handleOnClick={handleAddToCart} name='Thêm vào giỏ hàng'
-                                styles='h-[50px] bg-main text-white w-[200px] hover:bg-white hover:border-main hover:text-main hover:border'
-                            />
+                    <div className='flex gap-2'>
+                        {product?.quantity > 0 ? (
+                            <>
+                                <SelectQuantity
+                                    quantity={quantity}
+                                    handleQuantity={handleQuantity}
+                                    handleChangeQuantity={handleChangeQuantity}
+                                />
+                                <Button handleOnClick={handleAddToCart} name='Thêm vào giỏ hàng'
+                                    styles='h-[40px] bg-main text-white w-[200px] rounded-md hover:bg-white hover:border-main hover:text-main hover:border'
+                                />
+                            </>
 
-                        </div>
-                    )
-                        : (
-                            <span className='text-red-500 font-normal text-md border border-red-500 p-4 w-1/2'>
-                                Sản phẩm đã hết hàng
-                            </span>
                         )
-                    }
+                            : (
+                                <span className='h-[40px] flex items-center justify-center text-red-500 font-normal text-md p-4 w-1/2 border border-red-500 cursor-pointer'>
+                                    Sản phẩm đã hết hàng
+                                </span>
+                            )
+                        }
+                        <span
+                            className='cursor-pointer'
+                            title='Yêu thích' onClick={(e) => handleWishlist(e)}
+                        >
+                            <SelectOption
+                                styles={current?.wishlist?.some(i => i._id === pid)
+                                    ? 'w-[40px] h-[40px] flex items-center justify-center border border-red-500 rounded-md hover:bg-red-600 hover:text-white cursor-pointed '
+                                    : 'w-[40px] h-[40px] flex items-center justify-center border border-black hover:border-none rounded-md hover:bg-red-600 hover:text-white cursor-pointed p-2'}
+                                icon={current?.wishlist?.some(i => i._id === pid)
+                                    ? <FaHeart color='red' size={20} />
+                                    : <CiHeart size={20} />}
+                            />
+                        </span>
+                    </div>
                 </div>
             </div>
             {!isQuickView && <div className=' w-main my-4 '>
                 <ProductInfo product={product} totalCount={18} />
             </div>}
             {!isQuickView && <div className='sm:w-[540px] md:w-[940px] lg:w-main mb-5 my-4'>
-                <h3 className='mb-4 text-2xl font-semibold'>Sản phẩm tương tự</h3>
-                <CustomSlider normal={true} products={productRelate} />
+                <h3 className='mb-4 mx-4 text-2xl font-medium'>Sản phẩm tương tự</h3>
+                <CustomSlider
+                    normal={true}
+                    products={productRelate?.filter(el => el._id !== product._id)}
+                />
             </div>}
         </div>
     )

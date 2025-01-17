@@ -36,7 +36,7 @@ const CreateProductCategory = ({ dispatch }) => {
 
     const handleCreateProductCategory = async (data) => {
 
-        const payload = { ...data }
+        const payload = { ...data, brand: selectedBrands }
 
         dispatch(showModal({ isShowModal: true, payload: <Loading /> }))
         const response = await apiCreateProductCategory(payload)

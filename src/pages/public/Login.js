@@ -23,16 +23,15 @@ const Login = ({ dispatch, navigate }) => {
         email: '',
         password: '',
     })
-    const [confirmPassword, setConfirmPassword] = useState('')
 
     const [isForgotPassword, setIsForgotPassword] = useState(false)
     const [email, setEmail] = useState('')
     const [searchParams] = useSearchParams()
 
     const handleForgotPassword = async () => {
-        dispatch(showModal({ isShowModal: true, modalChidren: <Loading /> }))
+        dispatch(showModal({ isShowModal: true, modalChildren: <Loading /> }))
         const response = await apiForgotPassword({ email })
-        dispatch(showModal({ isShowModal: false, modalChidren: null }))
+        dispatch(showModal({ isShowModal: false, modalChildren: null }))
 
         if (response.success) {
             toast.success(response.mes)
@@ -62,38 +61,35 @@ const Login = ({ dispatch, navigate }) => {
     return (
         <div className='w-full flex justify-center items-center my-[100px]'>
 
-            {isForgotPassword && <div className='absolute inset-0 z-10 bg-overlay flex flex-col items-center py-8'>
-                <div className='bg-white flex flex-col gap-4 w-[400px] py-8 px-10'>
-                    <label htmlFor="email">Đặt lại mật khẩu của bạn</label>
+            {isForgotPassword && <div
+                onClick={() => setIsForgotPassword(false)}
+                className='absolute inset-0 z-50 bg-overlay flex flex-col items-center py-8'>
+                <div
+                    onClick={e => e.stopPropagation()}
+                    className='bg-white flex flex-col gap-2 w-[400px] py-8 px-10'>
+                    <h1 className='text-center capitalize text-[#333] text-xl font-medium'>Quên mật khẩu</h1>
+                    <label className='text-sm text-gray-500 my-2'>Nhập địa chỉ email đã đăng ký của bạn, chúng tôi sẽ gửi đường dẫn để đặt lại mật khẩu</label>
+                    <label >Nhập địa chỉ email</label>
                     <input type="text" id='email' placeholder='Địa chỉ email'
                         className='px-4 py-2 border rounded-md outline-none'
                         value={email} onChange={e => setEmail(e.target.value)}
                     />
-                    <input
-                        type="password"
-                        id='confirmPassword'
-                        placeholder='Nhập lại mật khẩu'
-                        className='px-4 py-2 border rounded-md outline-none'
-                        value={confirmPassword}
-                        onChange={e => setConfirmPassword(e.target.value)}
-                    />
-                    <div className='flex justify-center items-center mt-4 w-full '>
-                        <Button
-                            name='Hủy'
-                            handleOnClick={() => setIsForgotPassword(false)}
-                            styles='px-4 py-2 bg-gray-300 mx-2 text-semibold hover:bg-gray-400'
-                        />
-                        <Button name='Xác nhận' handleOnClick={handleForgotPassword}
-                            styles='px-4 py-2 bg-blue-500 text-white hover:bg-blue-600'
-                        />
 
+                    <div className='flex flex-col justify-center items-center'>
+                        <Button name='Xác nhận' handleOnClick={handleForgotPassword} fw />
+
+                        <span
+
+                            onClick={() => setIsForgotPassword(false)}
+                            className='px-4 py-2 text-semibold text-blue-600 hover:underline cursor-pointer'
+                        >Quay lại</span>
                     </div>
                 </div>
 
             </div>}
 
             <div className='flex flex-col items-center p-8 bg-white rounded-md min-w-[390px] shadow shadow-slate-400'>
-                <h1 className='uppercase text-[24px] text-[#333] font-nomal'>đăng nhập</h1>
+                <h1 className='capitalize text-center text-[24px] text-[#333] font-medium'>đăng nhập</h1>
 
                 <InputField
                     placeholder='Email'

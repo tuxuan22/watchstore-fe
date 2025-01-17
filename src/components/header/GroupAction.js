@@ -71,44 +71,46 @@ const GroupAction = ({ dispatch, navigate }) => {
                 />
 
             </div>
-            <div className='flex items-center gap-4 relative group h-[70px]'
+            <div className='flex items-center gap-4 relative group'
 
                 onMouseEnter={() => setOpenProfile(true)}
                 onMouseLeave={() => setOpenProfile(false)}
             >
                 <FaUserCircle size={24} className='cursor-pointer ' />
                 {openProfile && (
-                    <div className='absolute right border border-1 border-solid top-full w-[200px] bg-white  p-4 z-50'>
-                        {isLoggedIn && current
-                            ? <div className='flex flex-col gap-3'>
-                                <div className='flex items-center gap-2 pb-2 border-b'>
-                                    <img src={current?.avatar || avatar} alt="avatar" className='w-8 h-8 object-cover rounded-full' />
-                                    <span className='font-medium'>{`${current?.firstname} ${current?.lastname}`}</span>
-                                </div>
-                                <NavLink to={`/${path.MEMBER}/${path.PERSONAL}`} className='hover:text-main'>
-                                    Tài khoản
-                                </NavLink>
-                                {+current?.role === 1234 && (
-                                    <NavLink to={`/${path.ADMIN}/${path.DASHBOARD}`} className='hover:text-main'>
-                                        Quản trị hệ thống
+                    <div className='absolute right-0 top-full '>
+                        <div className='mt-4 shadow-md rounded-md border  w-[200px] bg-white  p-4 z-50'>
+                            {isLoggedIn && current
+                                ? <div className='flex flex-col gap-3'>
+                                    <div className='flex items-center gap-2 pb-2 border-b'>
+                                        <img src={current?.avatar || avatar} alt="avatar" className='w-8 h-8 object-cover rounded-full' />
+                                        <span className='font-medium'>{`${current?.firstname} ${current?.lastname}`}</span>
+                                    </div>
+                                    <NavLink to={`/${path.MEMBER}/${path.PERSONAL}`} className='hover:text-main'>
+                                        Tài khoản
                                     </NavLink>
-                                )}
-                                <NavLink to={`/${path.HOME}`}
-                                    className='hover:text-main'
-                                    onClick={() => dispatch(logout())}
-                                >
-                                    Đăng xuất
-                                </NavLink>
-                            </div>
-                            : <div className='flex flex-col gap-2'>
-                                <NavLink to={`/${path.LOGIN}`} className='hover:text-main'>
-                                    Đăng nhập
-                                </NavLink>
-                                <NavLink to={`/${path.REGISTER}`} className='hover:text-main'>
-                                    Đăng ký
-                                </NavLink>
-                            </div>
-                        }
+                                    {+current?.role === 1234 && (
+                                        <NavLink to={`/${path.ADMIN}/${path.DASHBOARD}`} className='hover:text-main'>
+                                            Quản trị hệ thống
+                                        </NavLink>
+                                    )}
+                                    <NavLink to={`/${path.HOME}`}
+                                        className='hover:text-main'
+                                        onClick={() => dispatch(logout())}
+                                    >
+                                        Đăng xuất
+                                    </NavLink>
+                                </div>
+                                : <div className='flex flex-col gap-2'>
+                                    <NavLink to={`/${path.LOGIN}`} className='hover:text-main'>
+                                        Đăng nhập
+                                    </NavLink>
+                                    <NavLink to={`/${path.REGISTER}`} className='hover:text-main'>
+                                        Đăng ký
+                                    </NavLink>
+                                </div>
+                            }
+                        </div>
                     </div>
                 )}
 

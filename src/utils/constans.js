@@ -223,24 +223,35 @@ export const productInfoTabs = [
 export const sortBy = [
     {
         id: 1,
+        value: 'title',
+        text: 'Tên sản phẩm (A-Z)',
+    },
+    {
+        id: 2,
+        value: '-title',
+        text: 'Tên sản phẩm (Z-A)',
+    },
+    {
+        id: 3,
         value: '-createdAt',
         text: 'Sản phẩm mới',
     },
     {
-        id: 2,
+        id: 4,
         value: 'price',
         text: 'Giá tăng dần',
     },
     {
-        id: 3,
+        id: 5,
         value: '-price',
         text: 'Giá giảm dần',
     },
     {
-        id: 4,
+        id: 6,
         value: '-sold',
         text: 'Sản phẩm bán chạy',
     },
+
 
 
 ]

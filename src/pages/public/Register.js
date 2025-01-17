@@ -59,26 +59,34 @@ const Register = ({ dispatch, navigate }) => {
     return (
         <div className=' w-full flex justify-center items-center my-[100px]'>
             {isVerifiedEmail && <div className='absolute top-0 left-0 right-0 bottom-0 bg-overlay z-50 flex flex-col justify-center items-center'>
-                <div className='bg-white w-[400px] flex flex-col gap-4 py-8 px-10'>
-                    <h4 >Chúng tôi đã gửi mã về email của bạn. Hãy kiểm tra email và nhập code để hoàn tất đăng ký</h4>
+                <div className='bg-white w-[400px] flex flex-col gap-3 py-8 px-10'>
+                    <h1 className='text-center capitalize text-[#333] text-xl font-medium'>Nhập mã xác nhận</h1>
+                    <label className='text-sm text-gray-500'>Chúng tôi đã gửi mã về email của bạn. Hãy kiểm tra email và nhập code để hoàn tất đăng ký</label>
                     <input type="text"
                         value={token}
                         onChange={e => setToken(e.target.value)}
-
+                        placeholder='Mã xác nhận'
                         className='px-4 py-2 border rounded-md outline-none'
                     />
                     {/* <OtpInput length={6} onOtpSubmit={onOtpSubmit} /> */}
-                    <button type='button'
-                        className='px-4 py-2 bg-blue-500 text-white hover:bg-blue-600'
-                        onClick={emailVerify}
-                    >
-                        Xác nhận
-                    </button>
-                    <span className='cursor-pointer' onClick={() => setIsVerifiedEmail(false)}>Trở lại trang đăng ký</span>
+                    <div className='flex flex-col items-center'>
+                        <Button
+                            name='Xác nhận'
+                            fw
+                            handleOnClick={emailVerify}
+
+                        >
+
+                        </Button>
+                        <span
+                            className='px-4 py-2 text-semibold text-blue-600 hover:underline cursor-pointer'
+                            onClick={() => setIsVerifiedEmail(false)}
+                        >Trở lại trang đăng ký</span>
+                    </div>
                 </div>
             </div>}
             <div className='flex flex-col items-center p-8 bg-white rounded-md min-w-[390px] shadow shadow-slate-400'>
-                <h1 className='uppercase text-[24px] text-[#333] font-nomal'>đăng ký</h1>
+                <h1 className='capitalize text-[24px] text-[#333] font-medium'>đăng ký</h1>
 
                 <InputField
                     placeholder='Họ'

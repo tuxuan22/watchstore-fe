@@ -1,14 +1,12 @@
 import React from 'react'
 import avatar from 'assets/avatar.png'
-import moment from 'moment'
-import { renderStar } from 'utils/helpers'
-require('moment/locale/vi')
-moment.locale('vi')
+import { formatDate, renderStar } from 'utils/helpers'
+
 
 const Comment = ({ avt = avatar, name = 'name', updatedAt, star, comment }) => {
     console.log(updatedAt);
 
-    console.log(moment(updatedAt).fromNow());
+    console.log((formatDate(updatedAt).fromNow()));
 
     return (
         <div className='flex mt-4 border-b'>
@@ -26,7 +24,7 @@ const Comment = ({ avt = avatar, name = 'name', updatedAt, star, comment }) => {
                                 ))}
                             </span>
                         </div>
-                        <span className='text-xs italic'>{moment(updatedAt)?.fromNow()}</span>
+                        <span className='text-xs italic'>{formatDate(updatedAt)?.fromNow()}</span>
                     </div>
 
                     <span className='pt-4'>

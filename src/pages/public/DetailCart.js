@@ -1,6 +1,6 @@
 import { BreadCrumb, Button, OrderItem } from 'components'
 import withBaseComponent from 'hocs/withBaseComponent'
-import React, { memo, useState } from 'react'
+import React, { memo, useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { createSearchParams, Link, Navigate } from 'react-router-dom'
 import Swal from 'sweetalert2'
@@ -10,6 +10,7 @@ import path from 'utils/path'
 
 const DetailCart = ({ navigate, location }) => {
     const { isLoggedIn, current, currentCart } = useSelector(state => state.user)
+
 
     const [category, setCategory] = useState(null)
     if (!isLoggedIn || !current) return <Navigate to={`/${path.LOGIN}`} replace={true}></Navigate>
@@ -67,17 +68,18 @@ const DetailCart = ({ navigate, location }) => {
                     <OrderItem
                         key={el._id}
                         defaultQuantity={el.quantity}
-                        color={el.color}
-                        title={el.title}
-                        thumb={el.thumb}
-                        price={el.price}
+                        color={el.product.color}
+                        title={el.product.title}
+                        thumb={el.product.thumb}
+                        // price={el.price}
+                        finalPrice={el.product.finalPrice}
                         pid={el.product?._id}
                     />
                 ))}
                 <div className='w-main my-4 mx-auto mb-8 flex flex-col justify-center items-end gap-3'>
                     <span className='flex items-center gap-4 text-sm'>
                         <span>Tổng tiền</span>
-                        <span className='text-red-500'>{`${formatMoney(currentCart?.reduce((sum, el) => +el?.price * el.quantity + sum, 0))}`}</span>
+                        <span className='text-red-500'>{`${formatMoney(currentCart?.reduce((sum, el) => +el?.product.finalPrice * el.quantity + sum, 0))}`}</span>
                     </span>
                     <Button handleOnClick={handleSubmit} name='Thanh toán' />
 

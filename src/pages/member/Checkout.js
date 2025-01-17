@@ -4,15 +4,20 @@ import path from 'utils/path'
 import logo from 'assets/logo.png'
 import { useSelector } from 'react-redux'
 import { formatMoney } from 'utils/helpers'
-import { Button, InputForm, Paypal } from 'components'
+import { Button, InputForm, Loading, Paypal } from 'components'
 import { useForm } from 'react-hook-form'
 import withBaseComponent from 'hocs/withBaseComponent'
 import { getCurrent } from 'store/user/asyncActions'
-import { createVNPayPayment } from 'apis'
+import { apiCreateOrder } from 'apis'
+import Swal from 'sweetalert2'
+import { showModal } from 'store/app/appSlice'
+import { toast } from 'react-toastify'
 
 const Checkout = ({ dispatch, navigate, location }) => {
     const { currentCart, current } = useSelector(state => state.user)
-    const [paymentMethod, setPaymentMethod] = useState('cod')
+    const [paymentMethod, setPaymentMethod] = useState('COD')
+    const [coupon, setCoupon] = useState('')
+    const [discount, setDiscount] = useState(0)
     const [isSuccess, setIsSuccess] = useState(false)
     const handlePaymentMethodChange = (e) => {
         setPaymentMethod(e.target.value)
@@ -22,25 +27,6 @@ const Checkout = ({ dispatch, navigate, location }) => {
         if (isSuccess) dispatch(getCurrent())
     }, [isSuccess])
 
-    // const handleVNPayPayment = async () => {
-    //     try {
-    //         const payload = {
-    //             amount: currentCart?.reduce((sum, el) => +el?.price * el.quantity + sum, 0),
-    //             orderBy: current?._id,
-    //             address: current?.address,
-    //             orderDescription: 'Thanh toán đơn hàng VNPay'
-    //         }
-
-    //         // Gọi API để lấy URL VNPay
-    //         const { paymentUrl } = await createVNPayPayment(payload)
-
-    //         // Chuyển hướng người dùng đến VNPay
-    //         window.location.href = paymentUrl
-    //     } catch (error) {
-    //         console.error('VNPay Payment Error:', error)
-    //         alert('Thanh toán VNPay thất bại. Vui lòng thử lại.')
-    //     }
-    // }
 
     const handleChangeAdd = () => {
         navigate({
@@ -49,13 +35,35 @@ const Checkout = ({ dispatch, navigate, location }) => {
         })
     }
 
+    const handleCreateOrder = async () => {
+
+        dispatch(showModal({ isShowModal: true, modalChildren: <Loading /> }))
+        const response = await apiCreateOrder({
+            products: currentCart,
+            total: Math.round(+currentCart?.reduce((sum, el) => +el?.product.finalPrice * el.quantity + sum, 0) / 25395.02),
+            orderBy: current?._id,
+            address: current?.address,
+            paymentMethod: paymentMethod
+        })
+        dispatch(showModal({ isShowModal: false, modalChildren: null }))
+
+        if (response.success) {
+            Swal.fire('Chúc mừng', 'Đã đặt hàng thành công!', 'success',)
+                .then(() => {
+                    navigate('/')
+                })
+        } else {
+            toast.error(response.mes)
+        }
+    }
+
     return (
         <div className='bg-bgc min-h-screen overflow-y-auto'>
             <div className='bg-white'>
 
-                <h1 className=' flex h-[64px]  items-center w-main mx-auto py-4   text-2xl font-normal'>
+                <h1 className=' flex h-[64px]  items-center w-main mx-auto py-4   text-2xl font-medium'>
                     <div className='w-[195px] mr-3' ><Link to={`/${path.HOME}`}><img src={logo} alt='logo' /></Link></div>
-                    <span>Thanh toán</span>
+                    <span >Thanh toán</span>
                 </h1>
             </div>
             <div className=' w-main mx-auto '>
@@ -66,11 +74,11 @@ const Checkout = ({ dispatch, navigate, location }) => {
                             {currentCart.map(el => (
                                 <div key={el._id} className='my-2 border p-4 rounded-lg flex items-center justify-between'>
                                     <div className='flex gap-2'>
-                                        <img src={el.thumb} alt={el.product.name} className='w-16 h-16 border rounded-md  object-cover' />
+                                        <img src={el.product.thumb} alt={el.product.name} className='w-16 h-16 border rounded-md  object-cover' />
                                         <div className='flex flex-col gap-1'>
-                                            <span className='text-sm line-clamp-1'>{el.title}</span>
-                                            <span className='text-xs'>{el.color}</span>
-                                            <span className='text-sm' >{el.quantity} x {formatMoney(Number(el.price))}</span>
+                                            <span className='text-sm line-clamp-1'>{el.product.title}</span>
+                                            <span className='text-xs'>{el.product.color}</span>
+                                            <span className='text-sm' >{el.quantity} x {formatMoney(Number(el.product.finalPrice))}</span>
                                         </div>
                                     </div>
                                 </div>
@@ -84,9 +92,9 @@ const Checkout = ({ dispatch, navigate, location }) => {
                                     <input
                                         type='radio'
                                         name='paymentMethod'
-                                        value='cod'
+                                        value='COD'
                                         className='w-4 h-4 mr-2'
-                                        checked={paymentMethod === 'cod'}
+                                        checked={paymentMethod === 'COD'}
                                         onChange={handlePaymentMethodChange} />
                                     <span>Thanh toán khi nhận hàng</span>
                                 </label>
@@ -94,9 +102,9 @@ const Checkout = ({ dispatch, navigate, location }) => {
                                     <input
                                         type='radio'
                                         name='paymentMethod'
-                                        value='paypal'
+                                        value='Paypal'
                                         className='w-4 h-4 mr-2'
-                                        checked={paymentMethod === 'paypal'}
+                                        checked={paymentMethod === 'Paypal'}
                                         onChange={handlePaymentMethodChange} />
                                     <span>Thanh toán Paypal</span>
                                 </label>
@@ -126,32 +134,59 @@ const Checkout = ({ dispatch, navigate, location }) => {
 
                                 <span className='text-sm'>{current?.address} </span>
                             </div>
-                            <div className='flex gap-4'>
-                                <span className='text-base font-medium'>Phí vận chuyển</span>
-                                {/* <span className='text-lg'>{formatMoney(120)}</span> */}
+                            <div className='flex flex-col'>
+                                <span className='text-base font-medium'>Mã giảm giá</span>
+                                <div className='flex gap-2 items-center'>
+                                    <input
+                                        type='text'
+                                        value={coupon}
+                                        onChange={e => setCoupon(e.target.value)}
+                                        placeholder='Nhập mã giảm giá'
+                                        className='h-[40px] flex-1 px-2 border rounded outline-none'
+                                    />
+                                    <Button
+                                        name='Áp dụng'
+                                    // handleOnClick={() => handleApplyCoupon()}
+
+                                    />
+                                </div>
+                                {discount > 0 && (
+                                    <div className='mx-4 flex justify-between'>
+                                        <div className='text-green-600 mt-2'>
+                                            Đã áp dụng giảm giá
+                                        </div>
+                                        <span className='text-green-600 mt-2'>
+                                            -{formatMoney(discount)}
+                                        </span>
+                                    </div>
+                                )}
                             </div>
+
                             <div className='flex gap-4'>
                                 <span className='text-base font-medium'>Tổng tiền</span>
-                                <span className='text-red-500'>{`${formatMoney(currentCart?.reduce((sum, el) => +el?.price * el.quantity + sum, 0))}`}</span>
+                                <span className='text-red-500'>{`${formatMoney(currentCart?.reduce((sum, el) => +el?.product.finalPrice * el.quantity + sum, 0))}`}</span>
                             </div>
                         </div>
                         <div>
-                            {paymentMethod === 'cod' && (
+                            {paymentMethod === 'COD' && (
 
                                 <div className='flex justify-center'>
-                                    <Button name='Thanh toán' />
+                                    <Button name='Thanh toán'
+                                        handleOnClick={handleCreateOrder}
+                                    />
                                 </div>
                             )}
-                            {paymentMethod === 'paypal' && (
+                            {paymentMethod === 'Paypal' && (
                                 <Paypal
                                     setIsSuccess={setIsSuccess}
                                     payload={{
                                         products: currentCart,
-                                        total: Math.round(+currentCart?.reduce((sum, el) => +el?.price * el.quantity + sum, 0) / 25395.02),
+                                        total: Math.round(+currentCart?.reduce((sum, el) => +el?.product.finalPrice * el.quantity + sum, 0) / 25395.02),
                                         orderBy: current?._id,
-                                        address: current?.address
+                                        address: current?.address,
+                                        paymentMethod: paymentMethod
                                     }}
-                                    amount={Math.round(+currentCart?.reduce((sum, el) => +el?.price * el.quantity + sum, 0) / 25395.02)} />
+                                    amount={Math.round(+currentCart?.reduce((sum, el) => +el?.product.finalPrice * el.quantity + sum, 0) / 25395.02)} />
 
                             )}
                             {paymentMethod === 'vnpay' && (

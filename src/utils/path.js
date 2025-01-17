@@ -9,7 +9,7 @@ const path = {
     BLOG: 'blog',
     CONTACT: 'lien-he',
     DETAIL_PRODUCT_CATEGORY_PID_TITLE: ':category/:title/:pid',
-    // DETAIL_PRODUCT: 'san-pham',
+    PRODUCT: 'san-pham',
     EMAIL_VERIFY: 'email/verify/:status',
     RESET_PASSWORD: 'resetpassword/:token',
     PRODUCTS: 'tat-ca-san-pham',

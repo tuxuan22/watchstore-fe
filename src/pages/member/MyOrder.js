@@ -1,7 +1,7 @@
 import { apiGetUserOrders, apiGetUserRatings } from 'apis'
-import { Button, InputForm, Pagination, VoteOption } from 'components'
+import { Button, DetailOrder, InputForm, Pagination, VoteOption } from 'components'
 import withBaseComponent from 'hocs/withBaseComponent'
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { createSearchParams, useSearchParams } from 'react-router-dom'
 import { formatMoney } from 'utils/helpers'
@@ -15,6 +15,7 @@ const MyOrder = ({ navigate, location, dispatch }) => {
     const [counts, setCounts] = useState(0)
     const [userRatings, setUserRatings] = useState([])
     const [params] = useSearchParams()
+    const { current } = useSelector((state) => state.user)
 
     const { register, formState: { errors }, watch, setValue } = useForm()
     const q = watch('q')
@@ -40,6 +41,11 @@ const MyOrder = ({ navigate, location, dispatch }) => {
         if (response.success) setUserRatings(response.ratings)
 
     }
+    const handleRatingSuccess = () => {
+        const qr = Object.fromEntries([...params])
+        fetchOrders(qr)
+        fetchUserRatings()
+    }
 
     useEffect(() => {
         const qr = Object.fromEntries([...params])
@@ -50,10 +56,20 @@ const MyOrder = ({ navigate, location, dispatch }) => {
         fetchUserRatings()
     }, [])
 
-    const hasUserRated = (productId) => {
-        return userRatings.some(rating => rating.product === productId)
+    const hasUserRated = useCallback((product) => {
+        return orders.some(order =>
+            // order.status === 'Succeed' &&
+            order.products?.some(item =>
+                item.product._id === product._id &&
+                product.ratings?.some(rating =>
+                    rating.postedBy.toString() === current?._id
+                )
+            )
+        )
 
-    }
+    }, [orders, current])
+
+    console.log(orders)
 
     const handleSearchStatus = ({ status }) => {
         setStatusTab(status)
@@ -103,31 +119,48 @@ const MyOrder = ({ navigate, location, dispatch }) => {
                 <div className='flex flex-col'>
                     {orders.length > 0
                         ? (<div>
-                            {orders?.map((el, i) => (
+                            {orders?.map((el) => (
                                 <div key={el._id} className='m-4 p-4 bg-white flex flex-col gap-4 justify-between'>
                                     {el.products?.map((item) => (
                                         <div key={item._id} className='flex justify-between gap-2'>
                                             <div className='flex gap-2'>
-                                                <img src={item.thumb} alt='thumb' className='w-16 h-16 border rounded-md  object-cover' />
+                                                <img src={item.product.thumb} alt='thumb' className='w-16 h-16 border rounded-md  object-cover' />
                                                 <div className='flex flex-col gap-1'>
-                                                    <span className='text-sm line-clamp-1'>{item.title}</span>
-                                                    <span className='text-xs'>{item.color}</span>
+                                                    <span className='text-sm line-clamp-1'>{item.product.title}</span>
+                                                    <span className='text-xs'>{item.product.color}</span>
                                                     <span className='text-sm' >Số lượng: {item.quantity}</span>
                                                 </div>
                                             </div>
                                             <span className=' flex flex-col justify-end text-sm' >
-                                                <span>{formatMoney(Number(item.price))}</span>
-                                                {!hasUserRated(item.product) && (
-                                                    <Button name='Đánh giá' handleOnClick={() => dispatch(showModal({ isShowModal: true, modalChildren: <VoteOption pid={item.product} nameProduct={item.title} /> }))}
-                                                    />
-                                                )}
+                                                <span>{formatMoney(Number(item.product.price))}</span>
+                                                {!hasUserRated(item.product)
+                                                    ? (
+                                                        <Button name='Đánh giá'
+                                                            handleOnClick={() => dispatch(showModal({
+                                                                isShowModal: true, modalChildren:
+                                                                    <VoteOption
+                                                                        reset={handleRatingSuccess}
+                                                                        pid={item.product} nameProduct={item.title} />
+                                                            }))}
+                                                        />
+                                                    )
+                                                    : (
+                                                        <div className=' my-2 w-[87px] h-[36px]'>
+
+                                                        </div>
+                                                    )}
 
                                             </span>
                                         </div>
                                     ))}
                                     <hr />
-                                    <span className=' flex justify-end p-2 text-red-500'>{formatMoney(Number(el.total * 25395.02))}</span>
-
+                                    <span className=' flex justify-end p-2 text-red-500'>{formatMoney(el?.products.reduce((sum, el) => sum + Number(el?.product.finalPrice * el.quantity), 0))}</span>
+                                    <div className='flex justify-end'>
+                                        <span
+                                            onClick={() => dispatch(showModal({ isShowModal: true, modalChildren: <DetailOrder orders={el} products={el.products} /> }))}
+                                            className={'cursor-pointer p-2 rounded-md border border-blue-400   text-blue-400 hover:text-white hover:bg-blue-400 '}
+                                        >Xem chi tiết</span>
+                                    </div>
                                 </div>
                             ))}
                         </div>)

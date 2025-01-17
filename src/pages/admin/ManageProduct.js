@@ -2,7 +2,6 @@ import { Button, CustomizeVariants, InputField, InputForm, Pagination } from 'co
 import React, { useCallback, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { apiDeleteProduct, apiGetProducts } from 'apis'
-import moment from 'moment'
 import { useSearchParams, createSearchParams } from 'react-router-dom'
 import useDebounce from 'hooks/useDebounce'
 import withBaseComponent from 'hocs/withBaseComponent'
@@ -10,7 +9,7 @@ import UpdateProduct from './UpdateProduct'
 import Swal from 'sweetalert2'
 import { toast } from 'react-toastify'
 import icons from 'utils/icons'
-import { formatMoney } from 'utils/helpers'
+import { formatDate, formatMoney } from 'utils/helpers'
 
 const { BiEdit, RiDeleteBin6Line, GoMultiSelect } = icons
 
@@ -181,7 +180,7 @@ const ManageProduct = ({ navigate, location }) => {
                     </td>
 
                     <td className='py-2 px-4 '>
-                      {moment(el.updatedAt).format('DD/MM/YYYY')}
+                      {formatDate(el.updatedAt).format('DD/MM/YYYY')}
                     </td>
                     <td className='flex justify-between py-2 px-4'>
 

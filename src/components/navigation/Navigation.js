@@ -28,33 +28,35 @@ const Navigation = ({ navigate }) => {
                         {el.value}
                     </NavLink>
                     {el.value === 'Sản phẩm' && isDropdownOpen && (
-                        <div className='absolute top-full left-0 bg-white shadow-md rounded-md p-6 w-[900px] z-50 grid grid-cols-4 gap-4'>
-                            {categories.map(el => (
-                                <div key={el._id} className='space-y-2'>
-                                    <NavLink
-                                        key={el._id}
-                                        to={`/${el.title}`}
-                                        className='font-medium text-gray-800 hover:text-main block mb-2 border-b'
-                                    >
-                                        {el.title.toUpperCase()}
-                                    </NavLink>
-                                    <div className='flex flex-col space-y-1'>
-                                        {el.brand?.map(item => (
-                                            <span
-                                                key={item}
-                                                onClick={() => navigate({
-                                                    pathname: `/${el.title}`,
-                                                    search: createSearchParams({ brand: item }).toString()
-                                                })}
-                                                className='text-sm text-gray-600 hover:text-main pl-2'
-                                            >
-                                                {item}
-                                            </span>
-                                        ))}
+                        <div className='absolute top-full left-0 '>
+                            <div className='bg-white mt-4 border  shadow-md rounded-md p-4 w-[900px] z-50 grid grid-cols-4 gap-4'>
+                                {categories.map(el => (
+                                    <div key={el._id} className='space-y-2'>
+                                        <NavLink
+                                            key={el._id}
+                                            to={`/${el.title}`}
+                                            className='font-medium text-gray-800 hover:text-main block mb-2 border-b'
+                                        >
+                                            {el.title.toUpperCase()}
+                                        </NavLink>
+                                        <div className='flex flex-col space-y-1'>
+                                            {el.brand?.map(item => (
+                                                <span
+                                                    key={item}
+                                                    onClick={() => navigate({
+                                                        pathname: `/${el.title}`,
+                                                        search: createSearchParams({ brand: item }).toString()
+                                                    })}
+                                                    className='text-sm text-gray-600 hover:text-main pl-2'
+                                                >
+                                                    {item}
+                                                </span>
+                                            ))}
+                                        </div>
                                     </div>
-                                </div>
 
-                            ))}
+                                ))}
+                            </div>
                         </div>
                     )}
                 </div>

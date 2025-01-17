@@ -19,6 +19,16 @@ const { IoEyeOutline, CiHeart, FaHeart, BsBagPlus } = icons
 const Product = ({ productData, isNew, normal, navigate, dispatch, location, pid }) => {
     const [isShowOption, setIsShowOption] = useState(false)
     const { current } = useSelector(state => state.user)
+
+    const [selectedProduct] = useState({
+        title: '',
+        color: '',
+        thumb: '',
+        images: [],
+        price: '',
+        discount: '',
+    })
+    // console.log(productData)
     const handleClickOptions = async (e, flag) => {
         e.stopPropagation()
         if (flag === 'CART') {
@@ -29,18 +39,32 @@ const Product = ({ productData, isNew, normal, navigate, dispatch, location, pid
                 search: createSearchParams({ redirect: location.pathname }).toString()
             })
             else {
+                const currentProductInCart = current?.cart?.find(el =>
+                    el.product._id === pid
+                )
+                const currentCartQuantity = currentProductInCart?.quantity || 0
+
+                const availableQuantity = productData?.quantity - currentCartQuantity
                 if (productData?.quantity === 0) {
                     toast.warning('Sản phẩm đã hết hàng')
                     return
                 }
+
+                if (availableQuantity === 0) {
+                    toast.warning('Đã đạt số lượng tối đa trong giỏ hàng')
+                    return
+                }
+
+
                 const response = await apiUpdateCart({
                     pid: productData?._id,
-                    color: productData?.color,
+                    // color: productData?.color,
                     quantity: 1,
                     price: productData?.price,
-                    thumb: productData?.thumb,
-                    title: productData?.title,
-
+                    // thumb: productData?.thumb,
+                    // title: productData?.title,
+                    discount: productData?.discount,
+                    finalPrice: productData?.finalPrice
 
                 })
                 if (response.success) {
@@ -103,7 +127,8 @@ const Product = ({ productData, isNew, normal, navigate, dispatch, location, pid
                         }
                     </div>}
                     <div className='flex justify-center'>
-                        <img className='  relative w-[196px] h-[196px] object-cover mb-4'
+                        <img className='  relative w-[196px] h-[196px] object-cover mb-4
+                        transition-all duration-300 ease-in-out hover:scale-105'
                             src={productData?.thumb || 'https://t4.ftcdn.net/jpg/04/99/93/31/360_F_499933117_ZAUBfv3P1HEOsZDrnkbNCt4jc3AodArl.jpg'} alt="" >
                         </img>
                     </div>

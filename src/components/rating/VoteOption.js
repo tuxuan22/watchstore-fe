@@ -1,14 +1,16 @@
 import { apiRatings } from 'apis'
 import Button from 'components/buttons/Button'
+import Loading from 'components/common/Loading'
 import withBaseComponent from 'hocs/withBaseComponent'
 import React, { memo, useState } from 'react'
+import { toast } from 'react-toastify'
 import { showModal } from 'store/app/appSlice'
 import { voteOption } from 'utils/constans'
 import icons from 'utils/icons'
 
 const { MdOutlineStar } = icons
 
-const VoteOption = ({ dispatch, nameProduct, pid }) => {
+const VoteOption = ({ dispatch, nameProduct, pid, reset }) => {
     const [star, setStar] = useState(null)
     const [comment, setComment] = useState('')
     // console.log({ comment, star, pid })
@@ -18,8 +20,16 @@ const VoteOption = ({ dispatch, nameProduct, pid }) => {
             alert('Bạn phải điền đầy đầy đủ thông tin đánh giá')
             return
         }
-        await apiRatings({ star, comment, pid })
+        dispatch(showModal({ isShowModal: true, modalChildren: <Loading /> }))
+        const response = await apiRatings({ star, comment, pid })
         dispatch(showModal({ isShowModal: false, modalChildren: null }))
+
+        if (response.success) {
+            toast.success(response.mes)
+            reset()
+        } else
+            toast.error(response.mes)
+
     }
 
     return (

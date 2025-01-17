@@ -50,9 +50,10 @@ const Sidebar = () => {
 
                     <NavLink key={(i.name)}
                         to={(i.name)}
+                        className='transition-all duration-300 hover:opacity-90'
                     >
-                        <div className='mx-2 mb-4'>
-                            <img className='rounded-[10px] overflow-hidden' src={i.img} alt='' />
+                        <div className='mx-2 my-4 transition-transform duration-300 hover:scale-105'>
+                            <img className='rounded-[10px] overflow-hidden transition-all duration-300 hover:shadow-lg' src={i.img} alt='' />
                         </div>
                         <div>
                             <h3 className='text-base'>{i.name}</h3>

@@ -1,7 +1,6 @@
 import { apiDeleteUser, apiGetUsers, apiUpdateUser } from 'apis'
 import React, { useCallback, useEffect, useState } from 'react'
 import { roles, blockStatus } from 'utils/constans'
-import moment from 'moment'
 import { InputField, Pagination, InputForm, Select, Button } from 'components'
 import useDebounce from 'hooks/useDebounce'
 import { useSearchParams } from 'react-router-dom'
@@ -9,6 +8,7 @@ import { useForm } from 'react-hook-form'
 import { toast } from 'react-toastify'
 import Swal from 'sweetalert2'
 import icons from 'utils/icons'
+import { formatDate } from 'utils/helpers'
 
 const { BiEdit, RiDeleteBin6Line, RiArrowGoBackFill, FaRegSquareCheck } = icons
 
@@ -220,7 +220,7 @@ const ManageUser = () => {
                       />
                       : <span>{blockStatus.find(isBlocked => +isBlocked.code === +el.isBlocked)?.value}</span>}
                   </td>
-                  <td className='py-2 px-4 '>{moment(el.createdAt).format('DD/MM/YYYY')}</td>
+                  <td className='py-2 px-4 '>{formatDate(el.createdAt).format('DD/MM/YYYY')}</td>
                   <td className=' py-2 px-4'>
                     {editItem?._id === el._id ? <div className='flex justify-between'>
 

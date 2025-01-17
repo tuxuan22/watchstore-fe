@@ -1,8 +1,8 @@
 import React from 'react'
 
-const SelectOption = ({ icon }) => {
+const SelectOption = ({ icon, styles }) => {
     return (
-        <div className='w-[35px] h-[35px] shadow-lg flex items-center mb-1 justify-center rounded-full bg-white hover:bg-main hover:text-white cursor-pointed'>
+        <div className={styles ? styles : `w-[35px] h-[35px] shadow-lg flex items-center mb-1 justify-center rounded-full bg-white hover:bg-red-600 hover:text-white cursor-pointed`}>
             {icon}
         </div>
     )

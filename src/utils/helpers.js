@@ -1,11 +1,15 @@
 import icons from './icons'
+import moment from 'moment'
 
+
+require('moment/locale/vi')
+moment.locale('vi')
 const { MdOutlineStar, MdOutlineStarOutline } = icons
 
 export const createSlug = string => string.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').split(' ').join('-')
 export const formatMoney = number => Number(number.toFixed(1)).toLocaleString('vi', { style: 'currency', currency: 'VND' })
 export const formatPrice = number => Math.round(number / 1000) * 1000
-
+export const formatDate = date => moment(date)
 
 export const renderStar = (number, size) => {
     if (!Number(number)) return
@@ -42,6 +46,10 @@ export const validate = (payload, setInvalidFields) => {
                 }
                 break
             case 'confirmPassword':
+                if (i[1].length < 6) {
+                    invalids++
+                    setInvalidFields(prev => [...prev, { name: i[0], mes: 'Mật khẩu phải có ít nhất 6 ký tự' }])
+                }
                 if (i[1] !== payload.password) {
                     invalids++
                     setInvalidFields(prev => [...prev, { name: i[0], mes: 'Mật khẩu không khớp' }])

@@ -1,14 +1,13 @@
 import { apiDeleteOrder, apiGetOrders, apiUpdateStatusOrder } from 'apis'
 import { DetailOrder, InputForm, Pagination } from 'components'
 import withBaseComponent from 'hocs/withBaseComponent'
-import moment from 'moment'
 import React, { useCallback, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useSearchParams } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import { showModal } from 'store/app/appSlice'
 import Swal from 'sweetalert2'
-import { formatMoney } from 'utils/helpers'
+import { formatDate, formatMoney } from 'utils/helpers'
 import icons from 'utils/icons'
 
 const { BiEdit, RiDeleteBin6Line, MdContentPasteSearch } = icons
@@ -55,7 +54,7 @@ const ManageOrder = ({ dispatch }) => {
     ]
 
     const fetchOrders = async (params) => {
-        const response = await apiGetOrders({ ...params, limit: 5 })
+        const response = await apiGetOrders({ ...params, limit: 5, sort: '-createdAt' })
         if (response.success) setOrders(response)
 
 
@@ -116,10 +115,12 @@ const ManageOrder = ({ dispatch }) => {
                         <thead className='font-bold bg-gray-200 text-[13px]'>
                             <tr>
                                 <th className='px-4 py-2'>#</th>
-                                <th className='px-4 py-2'>Khách hàng</th>
                                 <th className='px-4 py-2'>Mã đơn hàng</th>
-                                <th className='px-4 py-2'>Trạng thái</th>
+                                <th className='px-4 py-2'>Khách hàng</th>
+                                <th className='px-4 py-2'>Số điện thoại</th>
                                 <th className='px-4 py-2'>Ngày tạo</th>
+                                <th className='px-4 py-2'>Trạng thái</th>
+                                <th className='px-4 py-2'>Phương thức thanh toán</th>
                                 <th className='px-4 py-2'>Tổng tiền</th>
                                 <th className='px-4 py-2 w-[120px]'>Hành động</th>
                             </tr>
@@ -130,10 +131,16 @@ const ManageOrder = ({ dispatch }) => {
                                 <tr key={el._id} className='border border-gray-200'>
                                     <td className='py-2 px-4 '>{((+params.get('page') > 1 ? +params.get('page') - 1 : 0) * 5) + 1 + idx}</td>
                                     <td className='py-2 px-4 '>
-                                        <span>{el.orderBy}</span>
+                                        <span className='uppercase'>{el._id?.slice(-5)}</span>
                                     </td>
-                                    <td>
-                                        <span>{el._id}</span>
+                                    <td className='py-2 px-4 '>
+                                        <span>{el.orderBy.firstname} {el.orderBy.lastname}</span>
+                                    </td>
+                                    <td className='py-2 px-4 '>
+                                        <span>{el.orderBy.mobile}</span>
+                                    </td>
+                                    <td className='py-2 px-4 '>
+                                        {formatDate(el.createdAt).format('DD/MM/YYYY')}
                                     </td>
                                     <td className='py-2 px-4 '>
                                         {/* <span>{el.status}</span> */}
@@ -148,11 +155,11 @@ const ManageOrder = ({ dispatch }) => {
                                         </select>
                                     </td>
                                     <td className='py-2 px-4 '>
-                                        {moment(el.createdAt).format('DD/MM/YYYY')}
+                                        <span>{el.paymentMethod}</span>
                                     </td>
                                     <td className='py-2 px-4 '>
 
-                                        <span>{formatMoney(Number(el.total * 25395.02))}</span>
+                                        <span>{formatMoney(el?.products.reduce((sum, el) => sum + Number(el?.product.finalPrice * el.quantity), 0))}</span>
 
                                     </td>
 
